@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, reactive, watch } from "vue";
 import { useLottery } from "./composables/useLottery";
 import type { Participant } from "./types";
 
@@ -33,28 +33,87 @@ const existingEmails = computed(() => participants.value.map((p) => p.email));
 
 const isEditModalOpen = ref(false);
 const editForm = ref<Participant | null>(null);
-const editError = ref("");
+const editErrors = reactive({
+  name: "",
+  dateOfBirth: "",
+  email: "",
+  phone: "",
+});
+
+const resetEditErrors = () => {
+  editErrors.name = "";
+  editErrors.dateOfBirth = "";
+  editErrors.email = "";
+  editErrors.phone = "";
+};
+
+const validateEditForm = (): boolean => {
+  if (!editForm.value) return false;
+
+  let isValid = true;
+  resetEditErrors();
+
+  if (!editForm.value.name.trim()) {
+    editErrors.name = "Name is required";
+    isValid = false;
+  }
+
+  if (!editForm.value.dateOfBirth) {
+    editErrors.dateOfBirth = "Date of birth is required";
+    isValid = false;
+  } else {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const birthDate = new Date(editForm.value.dateOfBirth);
+    if (birthDate > today) {
+      editErrors.dateOfBirth = "Date of birth cannot be in the future";
+      isValid = false;
+    }
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!editForm.value.email.trim()) {
+    editErrors.email = "Email is required";
+    isValid = false;
+  } else if (!emailRegex.test(editForm.value.email)) {
+    editErrors.email = "Invalid email format";
+    isValid = false;
+  } else if (
+    checkEmailExists(editForm.value.email, editForm.value.id)
+  ) {
+    editErrors.email = "This email is already registered";
+    isValid = false;
+  }
+
+  const phoneRegex = /^\+380\d{9}$/;
+  if (!editForm.value.phone.trim()) {
+    editErrors.phone = "Phone number is required";
+    isValid = false;
+  } else if (!phoneRegex.test(editForm.value.phone)) {
+    editErrors.phone = "Phone must be in format +380XXXXXXXXX";
+    isValid = false;
+  }
+
+  return isValid;
+};
 
 const openEditModal = (p: Participant) => {
   editForm.value = { ...p };
-  editError.value = "";
+  resetEditErrors();
   isEditModalOpen.value = true;
 };
 
+watch(
+  () => editForm?.value?.phone,
+  (newValue) => {
+    if (newValue && !newValue.startsWith("+380")) {
+      editForm.value = editForm.value ? { ...editForm.value, phone: "+380" } : null;
+    }
+  },
+);
+
 const saveEdit = () => {
-  if (!editForm.value) return;
-
-  if (checkEmailExists(editForm.value.email, editForm.value.id)) {
-    editError.value = "Цей email вже зареєстровано.";
-    return;
-  }
-
-  if (
-    !editForm.value.name ||
-    !editForm.value.dateOfBirth ||
-    !editForm.value.phone
-  ) {
-    editError.value = "Всі поля повинні бути заповнені.";
+  if (!editForm.value || !validateEditForm()) {
     return;
   }
 
@@ -102,25 +161,32 @@ const confirmDelete = () => {
     <ModalWindow
       :is-open="isEditModalOpen"
       title="Редагувати дані"
-      @close="isEditModalOpen = false"
+      @close="isEditModalOpen = false; resetEditErrors()"
     >
       <div v-if="editForm" class="edit-form">
-        <BaseInput v-model="editForm.name" label="Name" />
+        <BaseInput v-model="editForm.name" label="Name" :error="editErrors.name" />
         <BaseInput
           v-model="editForm.dateOfBirth"
           label="Date of Birth"
           type="date"
+          :error="editErrors.dateOfBirth"
         />
         <BaseInput
           v-model="editForm.email"
           label="Email"
           type="email"
-          :error="editError"
+          :error="editErrors.email"
         />
-        <BaseInput v-model="editForm.phone" label="Phone" />
+        <BaseInput
+          v-model="editForm.phone"
+          label="Phone"
+          :error="editErrors.phone"
+        />
       </div>
       <template #footer>
-        <BaseButton variant="secondary" @click="isEditModalOpen = false"
+        <BaseButton
+          variant="secondary"
+          @click="isEditModalOpen = false; resetEditErrors()"
           >Скасувати</BaseButton
         >
         <BaseButton variant="primary" @click="saveEdit"
