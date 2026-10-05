@@ -16,10 +16,9 @@ const form = reactive({
   name: "",
   dateOfBirth: "",
   email: "",
-  phone: "+380", // Тепер поле зразу має код
+  phone: "+380",
 });
 
-// Не дасть стерти префікс
 watch(
   () => form.phone,
   (newValue) => {
@@ -39,19 +38,16 @@ const errors = reactive({
 const validate = (): boolean => {
   let isValid = true;
 
-  // Очищення попередніх помилок
   errors.name = "";
   errors.dateOfBirth = "";
   errors.email = "";
   errors.phone = "";
 
-  // Валідація імені
   if (!form.name.trim()) {
     errors.name = "Name is required";
     isValid = false;
   }
 
-  // Валідація дати (не у майбутньому)
   if (!form.dateOfBirth) {
     errors.dateOfBirth = "Date of birth is required";
     isValid = false;
@@ -65,7 +61,6 @@ const validate = (): boolean => {
     }
   }
 
-  // Валідація Email (RegExp та унікальність без урахування регістру)
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!form.email.trim()) {
     errors.email = "Email is required";
@@ -78,7 +73,6 @@ const validate = (): boolean => {
     isValid = false;
   }
 
-  // Валідація телефону (+380XXXXXXXXX)
   const phoneRegex = /^\+380\d{9}$/;
   if (!form.phone.trim()) {
     errors.phone = "Phone number is required";
@@ -98,7 +92,7 @@ const handleSubmit = () => {
     form.name = "";
     form.dateOfBirth = "";
     form.email = "";
-    form.phone = "+380"; // Замість порожнього рядка
+    form.phone = "+380";
   }
 };
 </script>
@@ -110,7 +104,6 @@ const handleSubmit = () => {
       <p class="text-gray-500 text-sm">Please fill in all the fields.</p>
     </div>
 
-    <!-- Обробник клавіші Enter висить на формі -->
     <form @submit.prevent="handleSubmit" @keydown.enter.prevent="handleSubmit">
       <BaseInput
         v-model="form.name"
@@ -120,7 +113,6 @@ const handleSubmit = () => {
         :error="errors.name"
       />
 
-      <!-- Input date автоматично викликає нативний календар -->
       <BaseInput
         v-model="form.dateOfBirth"
         label="Date of Birth"

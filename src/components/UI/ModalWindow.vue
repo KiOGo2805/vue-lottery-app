@@ -39,12 +39,10 @@ onUnmounted(() => document.removeEventListener("keydown", handleKeydown));
 
           <h3 v-if="title" class="text-xl font-bold mb-4">{{ title }}</h3>
 
-          <!-- Слот за замовчуванням для контенту -->
           <div class="mb-6">
             <slot></slot>
           </div>
 
-          <!-- Іменований слот для кнопок дій -->
           <div class="flex justify-end space-x-2">
             <slot name="footer">
               <BaseButton variant="secondary" @click="$emit('close')"

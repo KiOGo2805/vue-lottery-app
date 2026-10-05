@@ -21,7 +21,6 @@ const {
   removeWinner,
 } = useLottery();
 
-// --- Реєстрація ---
 const handleRegister = (participantData: Omit<Participant, "id">) => {
   const newParticipant: Participant = {
     ...participantData,
@@ -32,7 +31,6 @@ const handleRegister = (participantData: Omit<Participant, "id">) => {
 
 const existingEmails = computed(() => participants.value.map((p) => p.email));
 
-// --- Модальне вікно редагування ---
 const isEditModalOpen = ref(false);
 const editForm = ref<Participant | null>(null);
 const editError = ref("");
@@ -46,13 +44,11 @@ const openEditModal = (p: Participant) => {
 const saveEdit = () => {
   if (!editForm.value) return;
 
-  // Перевірка на унікальність email під час редагування (власний email дублікатом не вважається)
   if (checkEmailExists(editForm.value.email, editForm.value.id)) {
     editError.value = "Цей email вже зареєстровано.";
     return;
   }
 
-  // Базова валідація для інших полів перед збереженням
   if (
     !editForm.value.name ||
     !editForm.value.dateOfBirth ||
@@ -66,7 +62,6 @@ const saveEdit = () => {
   isEditModalOpen.value = false;
 };
 
-// --- Модальне вікно видалення ---
 const isDeleteModalOpen = ref(false);
 const participantToDelete = ref<Participant | null>(null);
 
@@ -135,7 +130,6 @@ const confirmDelete = () => {
       </template>
     </ModalWindow>
 
-    <!-- Модалка видалення -->
     <ModalWindow
       :is-open="isDeleteModalOpen"
       title="Підтвердження видалення"

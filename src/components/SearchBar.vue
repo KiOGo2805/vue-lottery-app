@@ -8,7 +8,6 @@ const emit = defineEmits<{
 const query = ref("");
 let timeout: ReturnType<typeof setTimeout>;
 
-// Реалізація debounce за допомогою watch з затримкою 300 мс
 watch(query, (newValue) => {
   clearTimeout(timeout);
   timeout = setTimeout(() => {

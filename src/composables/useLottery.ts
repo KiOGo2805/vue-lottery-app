@@ -5,7 +5,6 @@ export function useLottery() {
   const participants = ref<Participant[]>([]);
   const winners = ref<Participant[]>([]);
 
-  // Відновлення даних при завантаженні застосунку
   const savedParticipants = localStorage.getItem("lottery_participants");
   if (savedParticipants) {
     participants.value = JSON.parse(savedParticipants);
@@ -16,7 +15,6 @@ export function useLottery() {
     winners.value = JSON.parse(savedWinners);
   }
 
-  // Збереження за допомогою watcher (з опцією deep)
   watch(
     participants,
     (newVal) => {
@@ -33,8 +31,6 @@ export function useLottery() {
     { deep: true },
   );
 
-  // --- Методи для роботи з учасниками ---
-
   const addParticipant = (participant: Participant) => {
     participants.value.push(participant);
   };
@@ -44,7 +40,6 @@ export function useLottery() {
     if (index !== -1) {
       participants.value[index] = updated;
     }
-    // Якщо учасник є переможцем, оновлюємо дані і там
     const winnerIndex = winners.value.findIndex((w) => w.id === updated.id);
     if (winnerIndex !== -1) {
       winners.value[winnerIndex] = updated;
@@ -53,11 +48,9 @@ export function useLottery() {
 
   const deleteParticipant = (id: string) => {
     participants.value = participants.value.filter((p) => p.id !== id);
-    // Якщо видаляється учасник, він видаляється і з блоку переможців
     winners.value = winners.value.filter((w) => w.id !== id);
   };
 
-  // Перевірка унікальності email без урахування регістру
   const checkEmailExists = (email: string, excludeId?: string): boolean => {
     return participants.value.some(
       (p) =>
@@ -65,10 +58,7 @@ export function useLottery() {
     );
   };
 
-  // --- Методи для роботи з переможцями ---
-
   const pickNewWinner = () => {
-    // Обираємо переможця лише серед тих, хто ще не є переможцем
     const availableParticipants = participants.value.filter(
       (p) => !winners.value.some((w) => w.id === p.id),
     );

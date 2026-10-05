@@ -26,18 +26,15 @@ const toggleSort = (key: "name" | "dateOfBirth") => {
     sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
   } else {
     sortKey.value = key;
-    sortOrder.value = "asc"; // За замовчуванням за зростанням
+    sortOrder.value = "asc";
   }
 };
 
-// Спочатку список фільтрується, потім сортується (вихідний масив не змінюється)
 const filteredAndSorted = computed(() => {
-  // 1. Фільтрація
   let result = props.participants.filter((p) =>
     p.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
   );
 
-  // 2. Сортування
   if (sortKey.value) {
     result = result.sort((a, b) => {
       let valA = a[sortKey.value as keyof Participant].toLowerCase();
@@ -63,7 +60,6 @@ const filteredAndSorted = computed(() => {
         <thead>
           <tr class="border-b text-gray-600 font-semibold text-sm">
             <th class="py-3 px-4">#</th>
-            <!-- Контроли сортування з іконками -->
             <th
               class="py-3 px-4 cursor-pointer hover:bg-gray-50 select-none"
               @click="toggleSort('name')"
