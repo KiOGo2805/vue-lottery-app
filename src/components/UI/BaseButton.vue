@@ -10,14 +10,52 @@ defineProps<{
   <button
     :type="type || 'button'"
     :disabled="disabled"
-    class="px-4 py-2 rounded font-semibold text-white transition-colors duration-200"
-    :class="{
-      'bg-blue-500 hover:bg-blue-600': variant === 'primary' && !disabled,
-      'bg-gray-500 hover:bg-gray-600': variant === 'secondary' && !disabled,
-      'bg-red-500 hover:bg-red-600': variant === 'danger' && !disabled,
-      'bg-blue-300 cursor-not-allowed': disabled,
-    }"
+    :class="['base-button', `base-button--${variant || 'primary'}`, { 'is-disabled': disabled }]"
   >
     <slot />
   </button>
 </template>
+
+<style scoped>
+.base-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  color: #fff;
+  transition: background-color 0.2s ease, cursor 0.2s ease;
+  cursor: pointer;
+}
+
+.base-button--primary {
+  background-color: #3b82f6;
+}
+
+.base-button--primary:not(.is-disabled):hover {
+  background-color: #2563eb;
+}
+
+.base-button--secondary {
+  background-color: #6b7280;
+}
+
+.base-button--secondary:not(.is-disabled):hover {
+  background-color: #4b5563;
+}
+
+.base-button--danger {
+  background-color: #ef4444;
+}
+
+.base-button--danger:not(.is-disabled):hover {
+  background-color: #dc2626;
+}
+
+.is-disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+</style>

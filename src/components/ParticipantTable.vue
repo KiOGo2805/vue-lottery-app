@@ -50,51 +50,53 @@ const filteredAndSorted = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-6">
-    <div class="flex justify-between items-center mb-4">
+  <div class="participant-table">
+    <div class="participant-table__header">
       <SearchBar @filter-by-name="handleSearch" />
     </div>
 
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse min-w-max">
+    <div class="participant-table__scroll">
+      <table class="participant-table__table">
         <thead>
-          <tr class="border-b text-gray-600 font-semibold text-sm">
-            <th class="py-3 px-4">#</th>
+          <tr class="participant-table__head-row">
+            <th class="participant-table__cell">#</th>
             <th
-              class="py-3 px-4 cursor-pointer hover:bg-gray-50 select-none"
+              class="participant-table__cell participant-table__sort"
               @click="toggleSort('name')"
             >
               Name
-              <span v-if="sortKey === 'name'" class="ml-1">{{
+              <span v-if="sortKey === 'name'" class="participant-table__sort-indicator">{{
                 sortOrder === "asc" ? "↑" : "↓"
               }}</span>
             </th>
             <th
-              class="py-3 px-4 cursor-pointer hover:bg-gray-50 select-none"
+              class="participant-table__cell participant-table__sort"
               @click="toggleSort('dateOfBirth')"
             >
               Date of Birth
-              <span v-if="sortKey === 'dateOfBirth'" class="ml-1">{{
+              <span v-if="sortKey === 'dateOfBirth'" class="participant-table__sort-indicator">{{
                 sortOrder === "asc" ? "↑" : "↓"
               }}</span>
             </th>
-            <th class="py-3 px-4">Email</th>
-            <th class="py-3 px-4">Phone number</th>
-            <th class="py-3 px-4 text-center">Actions</th>
+            <th class="participant-table__cell">Email</th>
+            <th class="participant-table__cell">Phone number</th>
+            <th class="participant-table__cell participant-table__cell--actions">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr
             v-for="(p, index) in filteredAndSorted"
             :key="p.id"
-            class="border-b hover:bg-gray-50 text-sm"
+            class="participant-table__row"
           >
-            <td class="py-3 px-4">{{ index + 1 }}</td>
-            <td class="py-3 px-4">{{ p.name }}</td>
-            <td class="py-3 px-4">{{ p.dateOfBirth }}</td>
-            <td class="py-3 px-4">{{ p.email }}</td>
-            <td class="py-3 px-4">{{ p.phone }}</td>
-            <td class="py-3 px-4 text-center space-x-2">
+            <td class="participant-table__cell">{{ index + 1 }}</td>
+            <td class="participant-table__cell">{{ p.name }}</td>
+            <td class="participant-table__cell">{{ p.dateOfBirth }}</td>
+            <td class="participant-table__cell">{{ p.email }}</td>
+            <td class="participant-table__cell">{{ p.phone }}</td>
+            <td class="participant-table__cell participant-table__cell--actions">
               <BaseButton variant="secondary" @click="$emit('edit', p)"
                 >Edit</BaseButton
               >
@@ -104,7 +106,7 @@ const filteredAndSorted = computed(() => {
             </td>
           </tr>
           <tr v-if="filteredAndSorted.length === 0">
-            <td colspan="6" class="py-8 text-center text-gray-500">
+            <td colspan="6" class="participant-table__empty">
               No participants found.
             </td>
           </tr>
@@ -113,3 +115,79 @@ const filteredAndSorted = computed(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.participant-table {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.participant-table__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.participant-table__scroll {
+  overflow-x: auto;
+}
+
+.participant-table__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: max-content;
+}
+
+.participant-table__head-row {
+  border-bottom: 1px solid #e5e7eb;
+  color: #4b5563;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.participant-table__cell {
+  padding: 0.75rem 1rem;
+}
+
+.participant-table__sort {
+  cursor: pointer;
+  user-select: none;
+}
+
+.participant-table__sort:hover {
+  background: #f9fafb;
+}
+
+.participant-table__sort-indicator {
+  margin-left: 0.25rem;
+}
+
+.participant-table__row {
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+}
+
+.participant-table__row:hover {
+  background: #f9fafb;
+}
+
+.participant-table__cell--actions {
+  text-align: center;
+}
+
+.participant-table__cell--actions :deep(button + button) {
+  margin-left: 0.5rem;
+}
+
+.participant-table__empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #6b7280;
+}
+</style>

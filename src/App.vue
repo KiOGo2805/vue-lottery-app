@@ -79,7 +79,7 @@ const confirmDelete = () => {
 </script>
 
 <template>
-  <div class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+  <div class="app-shell">
     <WinnersBlock
       :winners="winners"
       :participants="participants"
@@ -90,7 +90,7 @@ const confirmDelete = () => {
     <RegistrationForm
       :existing-emails="existingEmails"
       @register="handleRegister"
-      class="mb-6"
+      class="app-shell__form"
     />
 
     <ParticipantTable
@@ -99,13 +99,12 @@ const confirmDelete = () => {
       @delete="openDeleteModal"
     />
 
-    <!-- Модалка редагування -->
     <ModalWindow
       :is-open="isEditModalOpen"
       title="Редагувати дані"
       @close="isEditModalOpen = false"
     >
-      <div v-if="editForm" class="space-y-4">
+      <div v-if="editForm" class="edit-form">
         <BaseInput v-model="editForm.name" label="Name" />
         <BaseInput
           v-model="editForm.dateOfBirth"
@@ -135,10 +134,10 @@ const confirmDelete = () => {
       title="Підтвердження видалення"
       @close="isDeleteModalOpen = false"
     >
-      <div v-if="participantToDelete" class="text-gray-700 mb-4">
+      <div v-if="participantToDelete" class="delete-confirmation">
         Ви дійсно бажаєте видалити учасника
-        <span class="font-bold">"{{ participantToDelete.name }}"</span>,
-        <span class="italic">"{{ participantToDelete.email }}"</span>?
+        <span class="delete-confirmation__name">"{{ participantToDelete.name }}"</span>,
+        <span class="delete-confirmation__email">"{{ participantToDelete.email }}"</span>?
       </div>
       <template #footer>
         <BaseButton variant="secondary" @click="isDeleteModalOpen = false"
@@ -149,3 +148,46 @@ const confirmDelete = () => {
     </ModalWindow>
   </div>
 </template>
+
+<style scoped>
+.app-shell {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .app-shell {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-shell {
+    padding: 2rem;
+  }
+}
+
+.app-shell__form {
+  margin-bottom: 1.5rem;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.delete-confirmation {
+  margin-bottom: 1rem;
+  color: #374151;
+}
+
+.delete-confirmation__name {
+  font-weight: 700;
+}
+
+.delete-confirmation__email {
+  font-style: italic;
+}
+</style>

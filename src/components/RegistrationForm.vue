@@ -98,10 +98,10 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <div class="mb-6 border-b pb-4">
-      <h2 class="text-xl font-bold text-gray-800 uppercase">Register Form</h2>
-      <p class="text-gray-500 text-sm">Please fill in all the fields.</p>
+  <div class="register-form">
+    <div class="register-form__header">
+      <h2 class="register-form__title">Register Form</h2>
+      <p class="register-form__subtitle">Please fill in all the fields.</p>
     </div>
 
     <form @submit.prevent="handleSubmit" @keydown.enter.prevent="handleSubmit">
@@ -138,9 +138,45 @@ const handleSubmit = () => {
         :error="errors.phone"
       />
 
-      <div class="flex justify-end mt-4">
+      <div class="register-form__actions">
         <BaseButton type="submit" variant="primary"> Save </BaseButton>
       </div>
     </form>
   </div>
 </template>
+
+<style scoped>
+.register-form {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  padding: 1.5rem;
+}
+
+.register-form__header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
+}
+
+.register-form__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  text-transform: uppercase;
+}
+
+.register-form__subtitle {
+  margin: 0.25rem 0 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.register-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+</style>

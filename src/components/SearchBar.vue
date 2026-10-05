@@ -17,12 +17,32 @@ watch(query, (newValue) => {
 </script>
 
 <template>
-  <div class="mb-4">
+  <div class="search-bar">
     <input
       v-model="query"
       type="text"
       placeholder="Search by name..."
-      class="border border-gray-300 rounded px-4 py-2 w-full max-w-md focus:outline-none focus:border-blue-500"
+      class="search-input"
     />
   </div>
 </template>
+
+<style scoped>
+.search-bar {
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 28rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: #3b82f6;
+}
+</style>
