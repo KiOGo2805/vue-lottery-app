@@ -36,7 +36,7 @@ const handleLogout = () => {
     <button
       v-if="auth.isAuthenticated"
       @click="handleLogout"
-      class="text-red-500 hover:text-red-700 transition-colors font-semibold"
+      class="text-red-500 hover:text-red-700 transition-colors font-semibold cursor-pointer"
     >
       Logout
     </button>
