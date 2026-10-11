@@ -43,65 +43,178 @@ const handleLogin = async (values: any) => {
 </script>
 
 <template>
-  <div class="bg-white p-8 rounded-lg shadow-md">
-    <div class="text-center mb-8">
-      <h1 class="text-2xl font-bold text-gray-800">Welcome Back</h1>
-      <p class="text-gray-500 text-sm mt-2">Sign in to access the users list</p>
+  <div class="login-view">
+    <div class="login-view__intro">
+      <h1 class="login-view__title">Welcome Back</h1>
+      <p class="login-view__subtitle">Sign in to access the users list</p>
       <!-- Тестові дані для зручності -->
-      <p class="text-xs text-blue-500 mt-1">
+      <p class="login-view__hint">
         Hint: use <b>emilys</b> / <b>emilyspass</b>
       </p>
     </div>
 
     <!-- Компонент Form з vee-validate -->
-    <Form @submit="handleLogin" :validation-schema="schema" class="space-y-4">
-      <div>
-        <label for="username" class="block font-semibold mb-1 text-gray-700"
+    <Form
+      @submit="handleLogin"
+      :validation-schema="schema"
+      class="login-view__form"
+    >
+      <div class="login-view__field-group">
+        <label for="username" class="login-view__label"
           >Username</label
         >
         <Field
           name="username"
           type="text"
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+          class="login-view__input"
           placeholder="Enter username"
         />
-        <ErrorMessage name="username" class="text-red-500 text-sm mt-1 block" />
+        <ErrorMessage name="username" class="login-view__field-error" />
       </div>
 
-      <div>
-        <label for="password" class="block font-semibold mb-1 text-gray-700"
+      <div class="login-view__field-group">
+        <label for="password" class="login-view__label"
           >Password</label
         >
         <Field
           name="password"
           type="password"
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+          class="login-view__input"
           placeholder="Enter password"
         />
-        <ErrorMessage name="password" class="text-red-500 text-sm mt-1 block" />
+        <ErrorMessage name="password" class="login-view__field-error" />
       </div>
 
-      <div
-        v-if="apiError"
-        class="bg-red-50 text-red-500 p-3 rounded text-sm text-center"
-      >
+      <div v-if="apiError" class="login-view__api-error">
         {{ apiError }}
       </div>
 
       <button
         type="submit"
         :disabled="isLoading"
-        class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors disabled:bg-blue-300 flex justify-center"
+        class="login-view__submit"
       >
         <span v-if="isLoading">Loading...</span>
         <span v-else>Login</span>
       </button>
     </Form>
 
-    <div class="mt-6 text-center">
-      <RouterLink to="/" class="text-sm text-gray-500 hover:text-blue-500">
+    <div class="login-view__footer">
+      <RouterLink to="/" class="login-view__home-link">
         &larr; Back to Home
       </RouterLink>
     </div>
   </div>
 </template>
+
+<style scoped>
+.login-view {
+  padding: 2rem;
+  border-radius: 0.5rem;
+  background: #fff;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%);
+}
+
+.login-view__intro {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.login-view__title {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 2rem;
+}
+
+.login-view__subtitle {
+  margin: 0.5rem 0 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.login-view__hint {
+  margin: 0.25rem 0 0;
+  color: #3b82f6;
+  font-size: 0.75rem;
+}
+
+.login-view :deep(.login-view__form) {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-view__label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+.login-view :deep(.login-view__input) {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+}
+
+.login-view :deep(.login-view__input:focus) {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+.login-view :deep(.login-view__field-error) {
+  display: block;
+  margin-top: 0.25rem;
+  color: #ef4444;
+  font-size: 0.875rem;
+}
+
+.login-view__api-error {
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  background: #fef2f2;
+  color: #ef4444;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.login-view__submit {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: 0.25rem;
+  background: #3b82f6;
+  color: #fff;
+  font-weight: 700;
+  transition: background-color 150ms;
+  cursor: pointer;
+}
+
+.login-view__submit:hover {
+  background: #2563eb;
+}
+
+.login-view__submit:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+.login-view__footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.login-view__home-link {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.login-view__home-link:hover {
+  color: #3b82f6;
+}
+</style>

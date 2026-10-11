@@ -31,140 +31,137 @@ const onSubmit = async (values: GenericObject) => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-xl rounded border bg-white p-6 shadow-sm">
-    <h1 class="mb-6 text-2xl font-bold">Створити користувача</h1>
+  <div class="user-create">
+    <h1 class="user-create__title">Створити користувача</h1>
 
     <Form
       :validation-schema="userSchema"
       @submit="onSubmit"
-      class="space-y-4"
+      class="user-create__form"
     >
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label for="firstName" class="mb-1 block text-sm font-semibold"
+      <div class="user-create__row">
+        <div class="user-create__field">
+          <label for="firstName" class="user-create__label"
             >Ім'я</label
           >
           <Field
             id="firstName"
             name="firstName"
-            class="w-full rounded border px-3 py-2"
+            class="user-create__input"
           />
-          <ErrorMessage
-            name="firstName"
-            class="mt-1 text-xs text-red-500"
-          />
+          <ErrorMessage name="firstName" class="user-create__field-error" />
         </div>
-        <div>
-          <label for="lastName" class="mb-1 block text-sm font-semibold"
+        <div class="user-create__field">
+          <label for="lastName" class="user-create__label"
             >Прізвище</label
           >
           <Field
             id="lastName"
             name="lastName"
-            class="w-full rounded border px-3 py-2"
+            class="user-create__input"
           />
-          <ErrorMessage name="lastName" class="mt-1 text-xs text-red-500" />
+          <ErrorMessage name="lastName" class="user-create__field-error" />
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label for="email" class="mb-1 block text-sm font-semibold"
+      <div class="user-create__row">
+        <div class="user-create__field">
+          <label for="email" class="user-create__label"
             >Email</label
           >
           <Field
             id="email"
             name="email"
             type="email"
-            class="w-full rounded border px-3 py-2"
+            class="user-create__input"
           />
-          <ErrorMessage name="email" class="mt-1 text-xs text-red-500" />
+          <ErrorMessage name="email" class="user-create__field-error" />
         </div>
-        <div>
-          <label for="phone" class="mb-1 block text-sm font-semibold"
+        <div class="user-create__field">
+          <label for="phone" class="user-create__label"
             >Телефон</label
           >
           <Field
             id="phone"
             name="phone"
             type="tel"
-            class="w-full rounded border px-3 py-2"
+            class="user-create__input"
           />
-          <ErrorMessage name="phone" class="mt-1 text-xs text-red-500" />
+          <ErrorMessage name="phone" class="user-create__field-error" />
         </div>
       </div>
 
-      <div class="grid grid-cols-3 gap-4">
-        <div>
-          <label for="username" class="mb-1 block text-sm font-semibold"
+      <div class="user-create__row user-create__row--three">
+        <div class="user-create__field">
+          <label for="username" class="user-create__label"
             >Username</label
           >
           <Field
             id="username"
             name="username"
-            class="w-full rounded border px-3 py-2"
+            class="user-create__input"
           />
-          <ErrorMessage name="username" class="mt-1 text-xs text-red-500" />
+          <ErrorMessage name="username" class="user-create__field-error" />
         </div>
-        <div>
-          <label for="password" class="mb-1 block text-sm font-semibold"
+        <div class="user-create__field">
+          <label for="password" class="user-create__label"
             >Пароль</label
           >
           <Field
             id="password"
             name="password"
             type="password"
-            class="w-full rounded border px-3 py-2"
+            class="user-create__input"
           />
-          <ErrorMessage name="password" class="mt-1 text-xs text-red-500" />
+          <ErrorMessage name="password" class="user-create__field-error" />
         </div>
-        <div>
-          <label for="age" class="mb-1 block text-sm font-semibold">Вік</label>
+        <div class="user-create__field">
+          <label for="age" class="user-create__label">Вік</label>
           <Field
             id="age"
             name="age"
             type="number"
-            class="w-full rounded border px-3 py-2"
+            class="user-create__input"
           />
-          <ErrorMessage name="age" class="mt-1 text-xs text-red-500" />
+          <ErrorMessage name="age" class="user-create__field-error" />
         </div>
       </div>
 
-      <div>
-        <label for="gender" class="mb-1 block text-sm font-semibold"
+      <div class="user-create__field">
+        <label for="gender" class="user-create__label"
           >Стать</label
         >
         <Field
           id="gender"
           name="gender"
           as="select"
-          class="w-full rounded border px-3 py-2"
+          class="user-create__input"
         >
           <option value="" disabled>Оберіть стать</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
         </Field>
-        <ErrorMessage name="gender" class="mt-1 text-xs text-red-500" />
+        <ErrorMessage name="gender" class="user-create__field-error" />
       </div>
 
       <div
         v-if="apiError"
         role="alert"
-        class="rounded bg-red-50 p-3 text-sm text-red-600"
+        class="user-create__api-error"
       >
         {{ apiError }}
       </div>
 
-      <div class="mt-6 flex justify-end gap-2">
+      <div class="user-create__actions">
         <RouterLink
           to="/users"
-          class="rounded border px-4 py-2 hover:bg-gray-50"
+          class="user-create__cancel"
           >Скасувати</RouterLink
         >
         <button
           type="submit"
           :disabled="isSaving"
-          class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
+          class="user-create__submit"
         >
           {{ isSaving ? "Створення..." : "Створити" }}
         </button>
@@ -172,3 +169,109 @@ const onSubmit = async (values: GenericObject) => {
     </Form>
   </div>
 </template>
+
+<style scoped>
+.user-create {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25rem;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 5%);
+}
+
+.user-create__title {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 2rem;
+}
+
+.user-create :deep(.user-create__form) {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.user-create__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.user-create__row--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.user-create__label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.user-create :deep(.user-create__input) {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+}
+
+.user-create :deep(.user-create__field-error) {
+  display: block;
+  margin-top: 0.25rem;
+  color: #ef4444;
+  font-size: 0.75rem;
+}
+
+.user-create__api-error {
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.user-create__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.user-create__cancel,
+.user-create__submit {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  transition: background-color 150ms;
+}
+
+.user-create__cancel:hover {
+  background: #f9fafb;
+}
+
+.user-create__submit {
+  border-color: #3b82f6;
+  background: #3b82f6;
+  color: #fff;
+  cursor: pointer;
+}
+
+.user-create__submit:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.user-create__submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .user-create__row,
+  .user-create__row--three {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

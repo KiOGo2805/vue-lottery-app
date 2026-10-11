@@ -58,14 +58,14 @@ const onSubmit = async (values: GenericObject) => {
 </script>
 
 <template>
-  <div class="bg-white p-6 rounded shadow-sm border max-w-xl mx-auto">
-    <h1 class="text-2xl font-bold mb-6">Редагувати користувача</h1>
+  <div class="user-edit">
+    <h1 class="user-edit__title">Редагувати користувача</h1>
 
-    <div v-if="isLoading">Завантаження...</div>
+    <div v-if="isLoading" class="user-edit__loading">Завантаження...</div>
     <div
       v-else-if="apiError && !initialData.id"
       role="alert"
-      class="rounded bg-red-50 p-3 text-sm text-red-600"
+      class="user-edit__api-error"
     >
       {{ apiError }}
     </div>
@@ -75,94 +75,94 @@ const onSubmit = async (values: GenericObject) => {
       @submit="onSubmit"
       :validation-schema="userSchema"
       :initial-values="initialData"
-      class="space-y-4"
+      class="user-edit__form"
     >
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-semibold mb-1">Ім'я</label>
-          <Field name="firstName" class="w-full border rounded px-3 py-2" />
-          <ErrorMessage name="firstName" class="text-red-500 text-xs mt-1" />
+      <div class="user-edit__row">
+        <div class="user-edit__field">
+          <label class="user-edit__label">Ім'я</label>
+          <Field name="firstName" class="user-edit__input" />
+          <ErrorMessage name="firstName" class="user-edit__field-error" />
         </div>
-        <div>
-          <label class="block text-sm font-semibold mb-1">Прізвище</label>
-          <Field name="lastName" class="w-full border rounded px-3 py-2" />
-          <ErrorMessage name="lastName" class="text-red-500 text-xs mt-1" />
+        <div class="user-edit__field">
+          <label class="user-edit__label">Прізвище</label>
+          <Field name="lastName" class="user-edit__input" />
+          <ErrorMessage name="lastName" class="user-edit__field-error" />
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-semibold mb-1">Email</label>
+      <div class="user-edit__row">
+        <div class="user-edit__field">
+          <label class="user-edit__label">Email</label>
           <Field
             name="email"
             type="email"
-            class="w-full border rounded px-3 py-2"
+            class="user-edit__input"
           />
-          <ErrorMessage name="email" class="text-red-500 text-xs mt-1" />
+          <ErrorMessage name="email" class="user-edit__field-error" />
         </div>
-        <div>
-          <label class="block text-sm font-semibold mb-1">Телефон</label>
-          <Field name="phone" class="w-full border rounded px-3 py-2" />
-          <ErrorMessage name="phone" class="text-red-500 text-xs mt-1" />
+        <div class="user-edit__field">
+          <label class="user-edit__label">Телефон</label>
+          <Field name="phone" class="user-edit__input" />
+          <ErrorMessage name="phone" class="user-edit__field-error" />
         </div>
       </div>
 
-      <div class="grid grid-cols-3 gap-4">
-        <div>
-          <label class="block text-sm font-semibold mb-1">Username</label>
-          <Field name="username" class="w-full border rounded px-3 py-2" />
-          <ErrorMessage name="username" class="text-red-500 text-xs mt-1" />
+      <div class="user-edit__row user-edit__row--three">
+        <div class="user-edit__field">
+          <label class="user-edit__label">Username</label>
+          <Field name="username" class="user-edit__input" />
+          <ErrorMessage name="username" class="user-edit__field-error" />
         </div>
-        <div>
-          <label class="block text-sm font-semibold mb-1">Пароль</label>
+        <div class="user-edit__field">
+          <label class="user-edit__label">Пароль</label>
           <Field
             name="password"
             type="password"
-            class="w-full border rounded px-3 py-2"
+            class="user-edit__input"
           />
-          <ErrorMessage name="password" class="text-red-500 text-xs mt-1" />
+          <ErrorMessage name="password" class="user-edit__field-error" />
         </div>
-        <div>
-          <label class="block text-sm font-semibold mb-1">Вік</label>
+        <div class="user-edit__field">
+          <label class="user-edit__label">Вік</label>
           <Field
             name="age"
             type="number"
-            class="w-full border rounded px-3 py-2"
+            class="user-edit__input"
           />
-          <ErrorMessage name="age" class="text-red-500 text-xs mt-1" />
+          <ErrorMessage name="age" class="user-edit__field-error" />
         </div>
-        <div>
-          <label class="block text-sm font-semibold mb-1">Стать</label>
+        <div class="user-edit__field">
+          <label class="user-edit__label">Стать</label>
           <Field
             name="gender"
             as="select"
-            class="w-full border rounded px-3 py-2"
+            class="user-edit__input"
           >
             <option value="male">Male</option>
             <option value="female">Female</option>
           </Field>
-          <ErrorMessage name="gender" class="text-red-500 text-xs mt-1" />
+          <ErrorMessage name="gender" class="user-edit__field-error" />
         </div>
       </div>
 
       <div
         v-if="apiError"
         role="alert"
-        class="rounded bg-red-50 p-3 text-sm text-red-600"
+        class="user-edit__api-error"
       >
         {{ apiError }}
       </div>
 
-      <div class="flex justify-end gap-2 mt-6">
+      <div class="user-edit__actions">
         <RouterLink
           to="/users"
-          class="px-4 py-2 border rounded hover:bg-gray-50"
+          class="user-edit__cancel"
           >Скасувати</RouterLink
         >
         <button
           type="submit"
           :disabled="isSaving"
-          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+          class="user-edit__submit"
         >
           {{ isSaving ? "Збереження..." : "Зберегти" }}
         </button>
@@ -170,3 +170,113 @@ const onSubmit = async (values: GenericObject) => {
     </Form>
   </div>
 </template>
+
+<style scoped>
+.user-edit {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25rem;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 5%);
+}
+
+.user-edit__title {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 2rem;
+}
+
+.user-edit__loading {
+  color: #6b7280;
+}
+
+.user-edit :deep(.user-edit__form) {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.user-edit__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.user-edit__row--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.user-edit__label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.user-edit :deep(.user-edit__input) {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+}
+
+.user-edit :deep(.user-edit__field-error) {
+  display: block;
+  margin-top: 0.25rem;
+  color: #ef4444;
+  font-size: 0.75rem;
+}
+
+.user-edit__api-error {
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.user-edit__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.user-edit__cancel,
+.user-edit__submit {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  transition: background-color 150ms;
+}
+
+.user-edit__cancel:hover {
+  background: #f9fafb;
+}
+
+.user-edit__submit {
+  border-color: #3b82f6;
+  background: #3b82f6;
+  color: #fff;
+  cursor: pointer;
+}
+
+.user-edit__submit:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.user-edit__submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .user-edit__row,
+  .user-edit__row--three {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
