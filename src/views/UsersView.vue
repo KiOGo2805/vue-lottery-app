@@ -28,8 +28,12 @@ const deleteUser = async (id: number) => {
     try {
       await ServiceProvider.users.delete(id);
       usersStore.removeUser(id); // Оновлюємо локальний стан
+      const currentPageUsers = usersStore.users.length;
+      if (currentPageUsers === 0 && currentPage.value > 1) {
+        updateRoute(currentPage.value - 1, searchInput.value);
+      }
     } catch (e) {
-      alert("Помилка видалення");
+      alert(e instanceof Error ? e.message : "Помилка видалення");
     }
   }
 };
@@ -52,7 +56,7 @@ watch(
   <div class="bg-white rounded-lg shadow-sm border p-6">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Користувачі</h1>
-      <div class="flex gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <input
           v-model="searchInput"
           @keydown.enter="handleSearch"
@@ -65,6 +69,12 @@ watch(
         >
           Знайти
         </button>
+        <RouterLink
+          to="/users/new"
+          class="rounded bg-green-600 px-4 py-1 text-white transition-colors hover:bg-green-700"
+        >
+          Створити
+        </RouterLink>
       </div>
     </div>
 

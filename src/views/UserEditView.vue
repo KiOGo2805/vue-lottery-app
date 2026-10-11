@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { Form, Field, ErrorMessage } from "vee-validate";
-import * as yup from "yup";
+import {
+  Form,
+  Field,
+  ErrorMessage,
+  type GenericObject,
+} from "vee-validate";
 import { ServiceProvider } from "../services/service-provider";
 import { useUsersStore } from "../stores/users";
 import type { User } from "../types/user";
+import { userSchema } from "../validation/user";
 
 const props = defineProps<{ id: string }>();
 const router = useRouter();
@@ -14,39 +19,38 @@ const usersStore = useUsersStore();
 const initialData = ref<Partial<User>>({});
 const isLoading = ref(true);
 const isSaving = ref(false);
-
-const schema = yup.object({
-  firstName: yup.string().required("Ім'я обов'язкове"),
-  lastName: yup.string().required("Прізвище обов'язкове"),
-  email: yup.string().email("Некоректний email").required("Email обов'язковий"),
-  username: yup.string().required("Username обов'язковий"),
-  age: yup.number().typeError("Має бути числом").required("Вік обов'язковий"),
-  gender: yup.string().required("Стать обов'язкова"),
-  phone: yup.string().required("Телефон обов'язковий"),
-});
+const apiError = ref("");
 
 onMounted(async () => {
   try {
     const user = await ServiceProvider.users.getById(Number(props.id));
     initialData.value = user;
-  } catch (e) {
-    alert("Помилка завантаження");
+  } catch (error) {
+    apiError.value =
+      error instanceof Error
+        ? error.message
+        : "Не вдалося завантажити користувача";
   } finally {
     isLoading.value = false;
   }
 });
 
-const onSubmit = async (values: any) => {
+const onSubmit = async (values: GenericObject) => {
+  apiError.value = "";
   isSaving.value = true;
   try {
+    const validatedValues = await userSchema.validate(values);
     const updatedUser = await ServiceProvider.users.update(
       Number(props.id),
-      values,
+      validatedValues,
     );
     usersStore.updateUser(updatedUser); // Оновлюємо кеш
     router.push("/users"); // Повертаємось до таблиці
-  } catch (e) {
-    alert("Помилка збереження");
+  } catch (error) {
+    apiError.value =
+      error instanceof Error
+        ? error.message
+        : "Не вдалося зберегти користувача";
   } finally {
     isSaving.value = false;
   }
@@ -58,11 +62,18 @@ const onSubmit = async (values: any) => {
     <h1 class="text-2xl font-bold mb-6">Редагувати користувача</h1>
 
     <div v-if="isLoading">Завантаження...</div>
+    <div
+      v-else-if="apiError && !initialData.id"
+      role="alert"
+      class="rounded bg-red-50 p-3 text-sm text-red-600"
+    >
+      {{ apiError }}
+    </div>
 
     <Form
       v-else
       @submit="onSubmit"
-      :validation-schema="schema"
+      :validation-schema="userSchema"
       :initial-values="initialData"
       class="space-y-4"
     >
@@ -103,6 +114,15 @@ const onSubmit = async (values: any) => {
           <ErrorMessage name="username" class="text-red-500 text-xs mt-1" />
         </div>
         <div>
+          <label class="block text-sm font-semibold mb-1">Пароль</label>
+          <Field
+            name="password"
+            type="password"
+            class="w-full border rounded px-3 py-2"
+          />
+          <ErrorMessage name="password" class="text-red-500 text-xs mt-1" />
+        </div>
+        <div>
           <label class="block text-sm font-semibold mb-1">Вік</label>
           <Field
             name="age"
@@ -123,6 +143,14 @@ const onSubmit = async (values: any) => {
           </Field>
           <ErrorMessage name="gender" class="text-red-500 text-xs mt-1" />
         </div>
+      </div>
+
+      <div
+        v-if="apiError"
+        role="alert"
+        class="rounded bg-red-50 p-3 text-sm text-red-600"
+      >
+        {{ apiError }}
       </div>
 
       <div class="flex justify-end gap-2 mt-6">

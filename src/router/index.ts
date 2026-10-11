@@ -21,6 +21,16 @@ const routes = [
     meta: { title: "Users List", layout: "DefaultLayout", requiresAuth: true },
   },
   {
+    path: "/users/new",
+    name: "user-create",
+    component: () => import("../views/UserCreateView.vue"),
+    meta: {
+      title: "Create User",
+      layout: "DefaultLayout",
+      requiresAuth: true,
+    },
+  },
+  {
     path: "/users/:id",
     name: "user-details",
     component: () => import("../views/UserDetailsView.vue"),
