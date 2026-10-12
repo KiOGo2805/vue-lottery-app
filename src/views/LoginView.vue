@@ -12,7 +12,6 @@ const route = useRoute();
 const apiError = ref("");
 const isLoading = ref(false);
 
-// Схема валідації yup
 const schema = yup.object({
   username: yup.string().required("Username is required"),
   password: yup
@@ -31,7 +30,6 @@ const handleLogin = async (values: any) => {
       password: values.password,
     });
 
-    // Повертаємо юзера туди, куди він хотів зайти, або на /users
     const redirectPath = (route.query.redirect as string) || "/users";
     router.push(redirectPath);
   } catch (error: any) {
@@ -60,9 +58,7 @@ const handleLogin = async (values: any) => {
       class="login-view__form"
     >
       <div class="login-view__field-group">
-        <label for="username" class="login-view__label"
-          >Username</label
-        >
+        <label for="username" class="login-view__label">Username</label>
         <Field
           name="username"
           type="text"
@@ -73,9 +69,7 @@ const handleLogin = async (values: any) => {
       </div>
 
       <div class="login-view__field-group">
-        <label for="password" class="login-view__label"
-          >Password</label
-        >
+        <label for="password" class="login-view__label">Password</label>
         <Field
           name="password"
           type="password"
@@ -89,11 +83,7 @@ const handleLogin = async (values: any) => {
         {{ apiError }}
       </div>
 
-      <button
-        type="submit"
-        :disabled="isLoading"
-        class="login-view__submit"
-      >
+      <button type="submit" :disabled="isLoading" class="login-view__submit">
         <span v-if="isLoading">Loading...</span>
         <span v-else>Login</span>
       </button>
