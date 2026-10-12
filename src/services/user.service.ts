@@ -24,7 +24,6 @@ export class UserService
   async getAll({ limit = 10, skip = 0, q = "" } = {}): Promise<
     PaginatedResult<User>
   > {
-    // Враховуємо пошук за параметром q
     const endpoint = q
       ? `/users/search?q=${q}&limit=${limit}&skip=${skip}`
       : `/users?limit=${limit}&skip=${skip}`;

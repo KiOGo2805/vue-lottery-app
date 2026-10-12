@@ -5,7 +5,7 @@ const routes = [
   {
     path: "/",
     name: "home",
-    component: () => import("../views/HomeView.vue"), // Ліниве завантаження
+    component: () => import("../views/HomeView.vue"),
     meta: { title: "Home | Vue Lottery", layout: "DefaultLayout" },
   },
   {
@@ -34,7 +34,7 @@ const routes = [
     path: "/users/:id",
     name: "user-details",
     component: () => import("../views/UserDetailsView.vue"),
-    props: true, // Передача id як props
+    props: true,
     meta: {
       title: "User Details",
       layout: "DefaultLayout",
@@ -67,7 +67,6 @@ const router = createRouter({
   routes,
 });
 
-// Navigation Guard для захисту маршрутів
 router.beforeEach((to, _from, next) => {
   const auth = useAuthStore();
 

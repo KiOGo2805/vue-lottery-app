@@ -6,7 +6,6 @@ import AuthLayout from "./layouts/AuthLayout.vue";
 
 const route = useRoute();
 
-// Динамічний вибір Layout на основі meta.layout поточного маршруту
 const layout = computed(() => {
   return route.meta.layout === "AuthLayout" ? AuthLayout : DefaultLayout;
 });

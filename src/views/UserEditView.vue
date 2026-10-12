@@ -44,8 +44,8 @@ const onSubmit = async (values: GenericObject) => {
       Number(props.id),
       validatedValues,
     );
-    usersStore.updateUser(updatedUser); // Оновлюємо кеш
-    router.push("/users"); // Повертаємось до таблиці
+    usersStore.updateUser(updatedUser);
+    router.push("/users");
   } catch (error) {
     apiError.value =
       error instanceof Error
