@@ -10,7 +10,7 @@ const isLoading = ref(true);
 
 onMounted(async () => {
   try {
-    user.value = await usersStore.getUserById(Number(props.id));
+    user.value = await usersStore.fetchUser(Number(props.id));
   } catch (e) {
     console.error(e);
   } finally {

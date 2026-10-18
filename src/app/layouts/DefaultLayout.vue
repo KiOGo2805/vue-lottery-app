@@ -3,7 +3,7 @@ import { AppHeader } from "../../widgets/app-header";
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 text-gray-900">
+  <div class="app-shell">
     <AppHeader />
     <main class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
       <slot />

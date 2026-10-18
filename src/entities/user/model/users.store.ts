@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { UserService } from "../api/user.service";
+import { ServiceProvider } from "../../../shared/api";
 import type { CreateUserDto, UpdateUserDto, User } from "./user";
 
 export const useUsersStore = defineStore("users", () => {
-  const userService = new UserService();
+  const userService = ServiceProvider.get<UserService>("users");
   const users = ref<User[]>([]);
   const total = ref(0);
   const isLoading = ref(false);
@@ -60,26 +61,26 @@ export const useUsersStore = defineStore("users", () => {
     }
   };
 
-  const getUserById = (id: number) => userService.getById(id);
+  const fetchUser = (id: number) => userService.getById(id);
 
   const createUser = async (data: CreateUserDto) => {
     const user = await userService.create(data);
-    addUser(user);
+    addCreatedUser(user);
     return user;
   };
 
-  const editUser = async (id: number, data: UpdateUserDto) => {
+  const updateUser = async (id: number, data: UpdateUserDto) => {
     const user = await userService.update(id, data);
-    updateUser(user);
+    applyUserUpdate(user);
     return user;
   };
 
-  const deleteUser = async (id: number) => {
+  const removeUser = async (id: number) => {
     await userService.delete(id);
-    removeUser(id);
+    applyUserRemoval(id);
   };
 
-  const removeUser = (id: number) => {
+  const applyUserRemoval = (id: number) => {
     const user = users.value.find((item) => item.id === id);
     if (!user) return;
 
@@ -96,7 +97,7 @@ export const useUsersStore = defineStore("users", () => {
     total.value = Math.max(0, total.value - 1);
   };
 
-  const updateUser = (updatedUser: User) => {
+  const applyUserUpdate = (updatedUser: User) => {
     const createdIndex = createdUsers.value.findIndex(
       (user) => user.id === updatedUser.id,
     );
@@ -118,7 +119,7 @@ export const useUsersStore = defineStore("users", () => {
     }
   };
 
-  const addUser = (user: User) => {
+  const addCreatedUser = (user: User) => {
     const alreadyCreated = createdUsers.value.some(
       (item) => item.id === user.id,
     );
@@ -136,9 +137,9 @@ export const useUsersStore = defineStore("users", () => {
     isLoading,
     error,
     fetchUsers,
-    getUserById,
+    fetchUser,
     createUser,
-    editUser,
-    deleteUser,
+    updateUser,
+    removeUser,
   };
 });

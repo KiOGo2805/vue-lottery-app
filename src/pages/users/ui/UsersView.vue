@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
 import { useUsersStore } from "../../../entities/user";
 import type { Participant } from "../../../shared/model";
-import UiButton from "../../../shared/ui/UiButton.vue";
-import UiInput from "../../../shared/ui/UiInput.vue";
+import { UiButton, UiInput } from "../../../shared/ui";
 
 const route = useRoute();
 const router = useRouter();
 const usersStore = useUsersStore();
+const { users, total, isLoading, error } = storeToRefs(usersStore);
 
 const limit = 10;
 const searchInput = ref((route.query.q as string) || "");
 const currentPage = computed(() => Number(route.query.page) || 1);
-const totalPages = computed(() => Math.ceil(usersStore.total / limit));
+const totalPages = computed(() => Math.ceil(total.value / limit));
 const lotteryWinners = ref<Participant[]>([]);
 const userToDelete = ref<{ id: number; fullName: string } | null>(null);
 
@@ -37,7 +38,7 @@ const mapUserToParticipant = (user: { id: number; firstName: string; lastName: s
 });
 
 const apiParticipants = computed(() =>
-  usersStore.users.map((user) => mapUserToParticipant(user)),
+  users.value.map((user) => mapUserToParticipant(user)),
 );
 
 const syncLotteryWinnersWithUsers = () => {
@@ -96,10 +97,10 @@ const deleteUser = async () => {
   if (!userToDelete.value) return;
 
   try {
-    await usersStore.deleteUser(userToDelete.value.id);
+    await usersStore.removeUser(userToDelete.value.id);
     closeDeleteModal();
 
-    const currentPageUsers = usersStore.users.length;
+    const currentPageUsers = users.value.length;
     if (currentPageUsers === 0 && currentPage.value > 1) {
       updateRoute(currentPage.value - 1, searchInput.value);
     }
@@ -195,11 +196,11 @@ watch(
       </div>
     </div>
 
-    <div v-if="usersStore.isLoading" class="users-view__loading">
+    <div v-if="isLoading" class="users-view__loading">
       Завантаження...
     </div>
-    <div v-else-if="usersStore.error" class="users-view__error">
-      {{ usersStore.error }}
+    <div v-else-if="error" class="users-view__error">
+      {{ error }}
     </div>
 
     <div v-else>
@@ -214,7 +215,7 @@ watch(
         </thead>
         <tbody>
           <tr
-            v-for="user in usersStore.users"
+            v-for="user in users"
             :key="user.id"
             class="users-view__table-row"
           >

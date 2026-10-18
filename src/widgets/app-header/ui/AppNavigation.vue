@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { useSessionStore } from "../../../entities/session";
 import { useRouter } from "vue-router";
-import UiButton from "../../../shared/ui/UiButton.vue";
+import { LogoutButton } from "../../../features/auth";
+import { UiButton } from "../../../shared/ui";
+import { useThemeStore } from "../../../entities/theme";
 
-const auth = useSessionStore();
+const session = useSessionStore();
+const theme = useThemeStore();
 const router = useRouter();
 
-const handleLogout = () => {
-  auth.logout();
-  router.push("/login");
-};
+const handleLogout = () => router.push("/login");
 </script>
 
 <template>
@@ -27,26 +27,28 @@ const handleLogout = () => {
       >About author</RouterLink
     >
     <RouterLink
-      v-if="auth.isAuthenticated"
+      v-if="session.isAuthenticated"
       to="/users"
       class="hover:text-blue-500 transition-colors"
       active-class="text-blue-600 font-bold"
       >Users</RouterLink
     >
 
-    <UiButton
-      v-if="auth.isAuthenticated"
-      @click="handleLogout"
-      class="text-red-500 hover:text-red-700 transition-colors font-semibold cursor-pointer"
-    >
-      Logout
-    </UiButton>
+    <LogoutButton v-if="session.isAuthenticated" @logout="handleLogout" />
     <RouterLink
-      v-else
+      v-if="!session.isAuthenticated"
       to="/login"
       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
     >
       Login
     </RouterLink>
+    <UiButton
+      type="button"
+      :aria-label="theme.isDark ? 'Switch to light theme' : 'Switch to dark theme'"
+      @click="theme.toggleTheme"
+      class="text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
+    >
+      {{ theme.isDark ? "Light theme" : "Dark theme" }}
+    </UiButton>
   </nav>
 </template>

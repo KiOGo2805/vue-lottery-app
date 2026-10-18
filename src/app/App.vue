@@ -3,8 +3,10 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import DefaultLayout from "./layouts/DefaultLayout.vue";
 import AuthLayout from "./layouts/AuthLayout.vue";
+import { useThemeStore } from "../entities/theme";
 
 const route = useRoute();
+useThemeStore();
 
 const layout = computed(() => {
   return route.meta.layout === "AuthLayout" ? AuthLayout : DefaultLayout;
