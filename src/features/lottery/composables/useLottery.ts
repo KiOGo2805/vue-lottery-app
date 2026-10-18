@@ -1,5 +1,5 @@
 import { ref, watch } from "vue";
-import type { Participant } from "../types";
+import type { Participant } from "../../../shared/types";
 
 const safeLocalStorage = {
   getItem: (key: string) => {

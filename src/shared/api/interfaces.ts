@@ -1,4 +1,7 @@
-import type { PaginatedResult } from "../types/user";
+export interface PaginatedResult<T> {
+  items: T[];
+  total: number;
+}
 
 export interface Readable<T> {
   getAll(params?: {

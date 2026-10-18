@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Logo from "./Logo.vue";
+import Logo from "../../shared/ui/Logo.vue";
 import AppNavigation from "./AppNavigation.vue";
 </script>
 

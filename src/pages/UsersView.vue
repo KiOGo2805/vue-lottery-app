@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useUsersStore } from "../stores/users";
-import { ServiceProvider } from "../services/service-provider";
-import type { Participant } from "../types";
+import { useUsersStore } from "../entities/user/model/users.store";
+import { ServiceProvider } from "../shared/api/service-provider";
+import type { Participant } from "../shared/types";
 
 const route = useRoute();
 const router = useRouter();

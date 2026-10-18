@@ -13,8 +13,3 @@ export interface User {
 
 export type CreateUserDto = Omit<User, "id">;
 export type UpdateUserDto = Partial<CreateUserDto>;
-
-export interface PaginatedResult<T> {
-  items: T[];
-  total: number;
-}

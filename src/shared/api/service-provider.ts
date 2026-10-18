@@ -1,5 +1,5 @@
-import { UserService } from "./user.service";
-import { AuthService } from "./auth.service";
+import { UserService } from "../../entities/user/api/user.service";
+import { AuthService } from "../../entities/session/api/auth.service";
 
 export class ServiceProvider {
   private static userService?: UserService;

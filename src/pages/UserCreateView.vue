@@ -2,9 +2,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ErrorMessage, Field, Form, type GenericObject } from "vee-validate";
-import { ServiceProvider } from "../services/service-provider";
-import { useUsersStore } from "../stores/users";
-import { userSchema } from "../validation/user";
+import { ServiceProvider } from "../shared/api/service-provider";
+import { useUsersStore } from "../entities/user/model/users.store";
+import { userSchema } from "../entities/user/model/user.validation";
 
 const router = useRouter();
 const usersStore = useUsersStore();

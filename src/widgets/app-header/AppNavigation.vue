@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useAuthStore } from "../stores/auth";
+import { useSessionStore } from "../../entities/session/model/session.store";
 import { useRouter } from "vue-router";
 
-const auth = useAuthStore();
+const auth = useSessionStore();
 const router = useRouter();
 
 const handleLogout = () => {

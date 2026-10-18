@@ -7,10 +7,10 @@ import {
   ErrorMessage,
   type GenericObject,
 } from "vee-validate";
-import { ServiceProvider } from "../services/service-provider";
-import { useUsersStore } from "../stores/users";
-import type { User } from "../types/user";
-import { userSchema } from "../validation/user";
+import { ServiceProvider } from "../shared/api/service-provider";
+import { useUsersStore } from "../entities/user/model/users.store";
+import type { User } from "../entities/user/model/user";
+import { userSchema } from "../entities/user/model/user.validation";
 
 const props = defineProps<{ id: string }>();
 const router = useRouter();

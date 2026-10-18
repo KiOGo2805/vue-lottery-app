@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { ServiceProvider } from "../services/service-provider";
-import type { User } from "../types/user";
+import { ServiceProvider } from "../shared/api/service-provider";
+import type { User } from "../entities/user/model/user";
 
 const props = defineProps<{ id: string }>();
 const user = ref<User | null>(null);

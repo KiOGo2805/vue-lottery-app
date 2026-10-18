@@ -3,9 +3,9 @@ import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
-import { useAuthStore } from "../stores/auth";
+import { useSessionStore } from "../entities/session/model/session.store";
 
-const auth = useAuthStore();
+const auth = useSessionStore();
 const router = useRouter();
 const route = useRoute();
 

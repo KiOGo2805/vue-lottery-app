@@ -1,11 +1,16 @@
-import { http } from "../api/http-client";
+import { http } from "../../../shared/api/http-client";
 import type {
   User,
   CreateUserDto,
   UpdateUserDto,
+} from "../model/user";
+import type {
+  Readable,
+  Creatable,
+  Editable,
+  Deletable,
   PaginatedResult,
-} from "../types/user";
-import type { Readable, Creatable, Editable, Deletable } from "./interfaces";
+} from "../../../shared/api/interfaces";
 
 interface UsersResponse {
   users: User[];
