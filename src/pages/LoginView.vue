@@ -4,6 +4,7 @@ import { useRouter, useRoute } from "vue-router";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { useSessionStore } from "../entities/session/model/session.store";
+import UiButton from "../shared/ui/UiButton.vue";
 
 const auth = useSessionStore();
 const router = useRouter();
@@ -83,10 +84,10 @@ const handleLogin = async (values: any) => {
         {{ apiError }}
       </div>
 
-      <button type="submit" :disabled="isLoading" class="login-view__submit">
+      <UiButton type="submit" :disabled="isLoading" class="login-view__submit">
         <span v-if="isLoading">Loading...</span>
         <span v-else>Login</span>
-      </button>
+      </UiButton>
     </Form>
 
     <div class="login-view__footer">

@@ -4,6 +4,8 @@ import { useRoute, useRouter } from "vue-router";
 import { useUsersStore } from "../entities/user/model/users.store";
 import { ServiceProvider } from "../shared/api/service-provider";
 import type { Participant } from "../shared/types";
+import UiButton from "../shared/ui/UiButton.vue";
+import UiInput from "../shared/ui/UiInput.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -148,14 +150,14 @@ watch(
           <h2 class="lottery-panel__title">Participants & winners</h2>
         </div>
 
-        <button
+        <UiButton
           type="button"
           class="lottery-button lottery-button--primary"
           :disabled="!canPickWinner"
           @click="pickLotteryWinner"
         >
           New winner
-        </button>
+        </UiButton>
       </div>
 
       <div class="winner-list">
@@ -165,14 +167,14 @@ watch(
 
         <div v-for="winner in lotteryWinners" :key="winner.id" class="winner-chip">
           <span>{{ winner.name }}</span>
-          <button
+          <UiButton
             type="button"
             class="winner-chip__remove"
             aria-label="Remove winner"
             @click="removeLotteryWinner(winner.id)"
           >
             ×
-          </button>
+          </UiButton>
         </div>
       </div>
     </section>
@@ -180,15 +182,15 @@ watch(
     <div class="users-view__header">
       <h1 class="users-view__title">Користувачі</h1>
       <div class="users-view__toolbar">
-        <input
+        <UiInput
           v-model="searchInput"
           @keydown.enter="handleSearch"
           placeholder="Пошук..."
           class="users-view__search"
         />
-        <button @click="handleSearch" class="users-view__search-button">
+        <UiButton @click="handleSearch" class="users-view__search-button">
           Знайти
-        </button>
+        </UiButton>
         <RouterLink to="/users/new" class="users-view__create-link">
           Створити
         </RouterLink>
@@ -228,12 +230,12 @@ watch(
               <RouterLink :to="`/users/${user.id}/edit`" class="users-view__edit-link">
                 Редагувати
               </RouterLink>
-              <button
+              <UiButton
                 @click="openDeleteModal(user.id, `${user.firstName} ${user.lastName}`)"
                 class="users-view__delete-button"
               >
                 Видалити
-              </button>
+              </UiButton>
             </td>
           </tr>
         </tbody>
@@ -247,34 +249,34 @@ watch(
             <strong>{{ userToDelete.fullName }}</strong>?
           </p>
           <div class="users-view__modal-actions">
-            <button type="button" class="users-view__modal-cancel" @click="closeDeleteModal">
+            <UiButton type="button" class="users-view__modal-cancel" @click="closeDeleteModal">
               Скасувати
-            </button>
-            <button type="button" class="users-view__modal-confirm" @click="deleteUser">
+            </UiButton>
+            <UiButton type="button" class="users-view__modal-confirm" @click="deleteUser">
               Видалити
-            </button>
+            </UiButton>
           </div>
         </div>
       </div>
 
       <div class="users-view__pagination">
-        <button
+        <UiButton
           :disabled="currentPage === 1"
           @click="updateRoute(currentPage - 1, searchInput)"
           class="users-view__page-button"
         >
           Попередня
-        </button>
+        </UiButton>
         <span class="users-view__page-number">
           Сторінка {{ currentPage }} з {{ totalPages || 1 }}
         </span>
-        <button
+        <UiButton
           :disabled="currentPage >= totalPages"
           @click="updateRoute(currentPage + 1, searchInput)"
           class="users-view__page-button"
         >
           Наступна
-        </button>
+        </UiButton>
       </div>
     </div>
   </div>

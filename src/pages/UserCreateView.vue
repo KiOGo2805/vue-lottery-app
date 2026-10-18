@@ -5,6 +5,7 @@ import { ErrorMessage, Field, Form, type GenericObject } from "vee-validate";
 import { ServiceProvider } from "../shared/api/service-provider";
 import { useUsersStore } from "../entities/user/model/users.store";
 import { userSchema } from "../entities/user/model/user.validation";
+import UiButton from "../shared/ui/UiButton.vue";
 
 const router = useRouter();
 const usersStore = useUsersStore();
@@ -158,13 +159,13 @@ const onSubmit = async (values: GenericObject) => {
           class="user-create__cancel"
           >Скасувати</RouterLink
         >
-        <button
+        <UiButton
           type="submit"
           :disabled="isSaving"
           class="user-create__submit"
         >
           {{ isSaving ? "Створення..." : "Створити" }}
-        </button>
+        </UiButton>
       </div>
     </Form>
   </div>

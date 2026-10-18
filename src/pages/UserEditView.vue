@@ -11,6 +11,7 @@ import { ServiceProvider } from "../shared/api/service-provider";
 import { useUsersStore } from "../entities/user/model/users.store";
 import type { User } from "../entities/user/model/user";
 import { userSchema } from "../entities/user/model/user.validation";
+import UiButton from "../shared/ui/UiButton.vue";
 
 const props = defineProps<{ id: string }>();
 const router = useRouter();
@@ -159,13 +160,13 @@ const onSubmit = async (values: GenericObject) => {
           class="user-edit__cancel"
           >Скасувати</RouterLink
         >
-        <button
+        <UiButton
           type="submit"
           :disabled="isSaving"
           class="user-edit__submit"
         >
           {{ isSaving ? "Збереження..." : "Зберегти" }}
-        </button>
+        </UiButton>
       </div>
     </Form>
   </div>
