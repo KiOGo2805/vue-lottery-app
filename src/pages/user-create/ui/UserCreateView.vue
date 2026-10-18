@@ -2,9 +2,8 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ErrorMessage, Field, Form, type GenericObject } from "vee-validate";
-import { useUsersStore } from "../entities/user/model/users.store";
-import { userSchema } from "../entities/user/model/user.validation";
-import UiButton from "../shared/ui/UiButton.vue";
+import { useUsersStore, userSchema } from "../../../entities/user";
+import UiButton from "../../../shared/ui/UiButton.vue";
 
 const router = useRouter();
 const usersStore = useUsersStore();

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useUsersStore } from "../entities/user/model/users.store";
-import type { Participant } from "../shared/types";
-import UiButton from "../shared/ui/UiButton.vue";
-import UiInput from "../shared/ui/UiInput.vue";
+import { useUsersStore } from "../../../entities/user";
+import type { Participant } from "../../../shared/model";
+import UiButton from "../../../shared/ui/UiButton.vue";
+import UiInput from "../../../shared/ui/UiInput.vue";
 
 const route = useRoute();
 const router = useRouter();

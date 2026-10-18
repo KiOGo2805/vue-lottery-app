@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { ServiceProvider } from "../../../shared/api/service-provider";
+import { UserService } from "../api/user.service";
 import type { CreateUserDto, UpdateUserDto, User } from "./user";
 
 export const useUsersStore = defineStore("users", () => {
+  const userService = new UserService();
   const users = ref<User[]>([]);
   const total = ref(0);
   const isLoading = ref(false);
@@ -28,7 +29,7 @@ export const useUsersStore = defineStore("users", () => {
     isLoading.value = true;
     error.value = "";
     try {
-      const res = await ServiceProvider.users.getAll({ limit, skip, q });
+      const res = await userService.getAll({ limit, skip, q });
       const serverUsers = res.items
         .filter((user) => !deletedUsers.value.has(user.id))
         .map((user) => updatedUsers.value.get(user.id) ?? user);
@@ -59,22 +60,22 @@ export const useUsersStore = defineStore("users", () => {
     }
   };
 
-  const getUserById = (id: number) => ServiceProvider.users.getById(id);
+  const getUserById = (id: number) => userService.getById(id);
 
   const createUser = async (data: CreateUserDto) => {
-    const user = await ServiceProvider.users.create(data);
+    const user = await userService.create(data);
     addUser(user);
     return user;
   };
 
   const editUser = async (id: number, data: UpdateUserDto) => {
-    const user = await ServiceProvider.users.update(id, data);
+    const user = await userService.update(id, data);
     updateUser(user);
     return user;
   };
 
   const deleteUser = async (id: number) => {
-    await ServiceProvider.users.delete(id);
+    await userService.delete(id);
     removeUser(id);
   };
 

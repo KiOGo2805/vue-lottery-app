@@ -1,4 +1,4 @@
-import type { User } from "../../entities/user/model/user";
+import type { User } from "../../../shared/model";
 
 export interface AuthResponse extends User {
   accessToken: string;

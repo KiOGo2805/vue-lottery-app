@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useUsersStore } from "../entities/user/model/users.store";
-import type { User } from "../entities/user/model/user";
+import { useUsersStore } from "../../../entities/user";
+import type { User } from "../../../entities/user";
 
 const props = defineProps<{ id: string }>();
 const usersStore = useUsersStore();

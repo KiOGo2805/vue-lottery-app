@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import { ServiceProvider } from "../../../shared/api/service-provider";
-import type { LoginCredentials } from "../../../shared/types/auth";
-import type { User } from "../../user/model/user";
+import { AuthService } from "../api/auth.service";
+import type { LoginCredentials } from "./auth";
+import type { User } from "../../../shared/model";
 
 export const useSessionStore = defineStore("session", () => {
+  const authService = new AuthService();
   const user = ref<User | null>(null);
   const accessToken = ref<string | null>(localStorage.getItem("accessToken"));
 
@@ -16,7 +17,7 @@ export const useSessionStore = defineStore("session", () => {
   }
 
   const login = async (credentials: LoginCredentials) => {
-    const response = await ServiceProvider.auth.login(credentials);
+    const response = await authService.login(credentials);
 
     accessToken.value = response.accessToken;
     user.value = response;

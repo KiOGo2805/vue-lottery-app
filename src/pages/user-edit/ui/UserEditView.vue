@@ -7,10 +7,9 @@ import {
   ErrorMessage,
   type GenericObject,
 } from "vee-validate";
-import { useUsersStore } from "../entities/user/model/users.store";
-import type { User } from "../entities/user/model/user";
-import { userSchema } from "../entities/user/model/user.validation";
-import UiButton from "../shared/ui/UiButton.vue";
+import { useUsersStore, userSchema } from "../../../entities/user";
+import type { User } from "../../../entities/user";
+import UiButton from "../../../shared/ui/UiButton.vue";
 
 const props = defineProps<{ id: string }>();
 const router = useRouter();

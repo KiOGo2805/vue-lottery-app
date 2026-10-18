@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useSessionStore } from "../../entities/session/model/session.store";
+import { useSessionStore } from "../../../entities/session";
 import { useRouter } from "vue-router";
-import UiButton from "../../shared/ui/UiButton.vue";
+import UiButton from "../../../shared/ui/UiButton.vue";
 
 const auth = useSessionStore();
 const router = useRouter();

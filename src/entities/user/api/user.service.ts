@@ -1,4 +1,4 @@
-import { http } from "../../../shared/api/http-client";
+import { http } from "../../../shared/api";
 import type {
   User,
   CreateUserDto,
@@ -10,7 +10,7 @@ import type {
   Editable,
   Deletable,
   PaginatedResult,
-} from "../../../shared/api/interfaces";
+} from "../../../shared/api";
 
 interface UsersResponse {
   users: User[];

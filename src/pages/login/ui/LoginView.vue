@@ -3,8 +3,8 @@ import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
-import { useSessionStore } from "../entities/session/model/session.store";
-import UiButton from "../shared/ui/UiButton.vue";
+import { useSessionStore } from "../../../entities/session";
+import UiButton from "../../../shared/ui/UiButton.vue";
 
 const auth = useSessionStore();
 const router = useRouter();
