@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { ServiceProvider } from "../../../shared/api/service-provider";
-import type { User } from "./user";
+import type { CreateUserDto, UpdateUserDto, User } from "./user";
 
 export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>([]);
@@ -57,6 +57,25 @@ export const useUsersStore = defineStore("users", () => {
     } finally {
       isLoading.value = false;
     }
+  };
+
+  const getUserById = (id: number) => ServiceProvider.users.getById(id);
+
+  const createUser = async (data: CreateUserDto) => {
+    const user = await ServiceProvider.users.create(data);
+    addUser(user);
+    return user;
+  };
+
+  const editUser = async (id: number, data: UpdateUserDto) => {
+    const user = await ServiceProvider.users.update(id, data);
+    updateUser(user);
+    return user;
+  };
+
+  const deleteUser = async (id: number) => {
+    await ServiceProvider.users.delete(id);
+    removeUser(id);
   };
 
   const removeUser = (id: number) => {
@@ -116,8 +135,9 @@ export const useUsersStore = defineStore("users", () => {
     isLoading,
     error,
     fetchUsers,
-    addUser,
-    removeUser,
-    updateUser,
+    getUserById,
+    createUser,
+    editUser,
+    deleteUser,
   };
 });

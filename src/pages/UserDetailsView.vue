@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { ServiceProvider } from "../shared/api/service-provider";
+import { useUsersStore } from "../entities/user/model/users.store";
 import type { User } from "../entities/user/model/user";
 
 const props = defineProps<{ id: string }>();
+const usersStore = useUsersStore();
 const user = ref<User | null>(null);
 const isLoading = ref(true);
 
 onMounted(async () => {
   try {
-    user.value = await ServiceProvider.users.getById(Number(props.id));
+    user.value = await usersStore.getUserById(Number(props.id));
   } catch (e) {
     console.error(e);
   } finally {

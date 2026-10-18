@@ -2,7 +2,6 @@
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useUsersStore } from "../entities/user/model/users.store";
-import { ServiceProvider } from "../shared/api/service-provider";
 import type { Participant } from "../shared/types";
 import UiButton from "../shared/ui/UiButton.vue";
 import UiInput from "../shared/ui/UiInput.vue";
@@ -97,8 +96,7 @@ const deleteUser = async () => {
   if (!userToDelete.value) return;
 
   try {
-    await ServiceProvider.users.delete(userToDelete.value.id);
-    usersStore.removeUser(userToDelete.value.id);
+    await usersStore.deleteUser(userToDelete.value.id);
     closeDeleteModal();
 
     const currentPageUsers = usersStore.users.length;

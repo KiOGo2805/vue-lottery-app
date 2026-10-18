@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ErrorMessage, Field, Form, type GenericObject } from "vee-validate";
-import { ServiceProvider } from "../shared/api/service-provider";
 import { useUsersStore } from "../entities/user/model/users.store";
 import { userSchema } from "../entities/user/model/user.validation";
 import UiButton from "../shared/ui/UiButton.vue";
@@ -18,8 +17,7 @@ const onSubmit = async (values: GenericObject) => {
   isSaving.value = true;
   try {
     const validatedValues = await userSchema.validate(values);
-    const createdUser = await ServiceProvider.users.create(validatedValues);
-    usersStore.addUser(createdUser);
+    await usersStore.createUser(validatedValues);
     const lastPage = Math.max(1, Math.ceil(usersStore.total / usersPerPage));
     await router.push({ name: "users", query: { page: lastPage } });
   } catch (error) {

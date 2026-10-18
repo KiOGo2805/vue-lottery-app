@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSessionStore } from "../../entities/session/model/session.store";
 import { useRouter } from "vue-router";
+import UiButton from "../../shared/ui/UiButton.vue";
 
 const auth = useSessionStore();
 const router = useRouter();
@@ -33,13 +34,13 @@ const handleLogout = () => {
       >Users</RouterLink
     >
 
-    <button
+    <UiButton
       v-if="auth.isAuthenticated"
       @click="handleLogout"
       class="text-red-500 hover:text-red-700 transition-colors font-semibold cursor-pointer"
     >
       Logout
-    </button>
+    </UiButton>
     <RouterLink
       v-else
       to="/login"

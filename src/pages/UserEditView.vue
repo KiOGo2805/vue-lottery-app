@@ -7,7 +7,6 @@ import {
   ErrorMessage,
   type GenericObject,
 } from "vee-validate";
-import { ServiceProvider } from "../shared/api/service-provider";
 import { useUsersStore } from "../entities/user/model/users.store";
 import type { User } from "../entities/user/model/user";
 import { userSchema } from "../entities/user/model/user.validation";
@@ -24,7 +23,7 @@ const apiError = ref("");
 
 onMounted(async () => {
   try {
-    const user = await ServiceProvider.users.getById(Number(props.id));
+    const user = await usersStore.getUserById(Number(props.id));
     initialData.value = user;
   } catch (error) {
     apiError.value =
@@ -41,11 +40,10 @@ const onSubmit = async (values: GenericObject) => {
   isSaving.value = true;
   try {
     const validatedValues = await userSchema.validate(values);
-    const updatedUser = await ServiceProvider.users.update(
+    await usersStore.editUser(
       Number(props.id),
       validatedValues,
     );
-    usersStore.updateUser(updatedUser);
     router.push("/users");
   } catch (error) {
     apiError.value =
