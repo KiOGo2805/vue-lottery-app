@@ -14,7 +14,7 @@ const handleLogout = () => {
 <template>
   <UiButton
     @click="handleLogout"
-    class="text-red-500 hover:text-red-700 transition-colors font-semibold cursor-pointer"
+    class="logout-button bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors font-medium cursor-pointer"
   >
     Logout
   </UiButton>

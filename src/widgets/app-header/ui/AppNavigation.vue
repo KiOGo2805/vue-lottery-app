@@ -2,11 +2,9 @@
 import { useSessionStore } from "../../../entities/session";
 import { useRouter } from "vue-router";
 import { LogoutButton } from "../../../features/auth";
-import { UiButton } from "../../../shared/ui";
-import { useThemeStore } from "../../../entities/theme";
+import ThemeToggleButton from "../../../features/theme-toggle";
 
 const session = useSessionStore();
-const theme = useThemeStore();
 const router = useRouter();
 
 const handleLogout = () => router.push("/login");
@@ -42,13 +40,6 @@ const handleLogout = () => router.push("/login");
     >
       Login
     </RouterLink>
-    <UiButton
-      type="button"
-      :aria-label="theme.isDark ? 'Switch to light theme' : 'Switch to dark theme'"
-      @click="theme.toggleTheme"
-      class="text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
-    >
-      {{ theme.isDark ? "Light theme" : "Dark theme" }}
-    </UiButton>
+    <ThemeToggleButton />
   </nav>
 </template>
