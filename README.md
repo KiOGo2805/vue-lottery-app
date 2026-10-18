@@ -25,17 +25,27 @@ on a higher layer. Cross-slice imports use each slice's `index.ts` public API.
 
 ```text
 src/
-├── app/                  # App bootstrap, service config, router and layouts
+├── app/                  # Bootstrap, providers, router and layouts
 ├── pages/                # Route-level screens
-├── widgets/              # App header/navigation
+├── widgets/              # App header/navigation and UsersTable
 ├── features/             # Authentication and user forms
 ├── entities/             # Session, users and theme state; API services
-└── shared/               # HTTP client, service registry, models and UI wrappers
+└── shared/               # HTTP client, service registry, models and PrimeVue wrappers
 ```
 
-API services are registered in `app/config/services.ts` and resolved through
-`shared/api/ServiceProvider`. Pages and widgets use Pinia stores rather than
-calling services directly. The session and theme stores persist their state.
+API services are registered in `app/providers/services.ts` and resolved through
+`shared/api/ServiceProvider`. PrimeVue, toast, confirmation services and the
+application color preset are installed in `app/providers/ui.ts`. Pages and
+widgets use Pinia stores rather than calling services directly. Shared UI
+wrappers provide buttons, validated inputs, tables, confirmation dialogs and
+toast notifications. The session and theme stores persist their state.
+
+Pinia persistence replaces manual store hydration and subscriptions. The
+session store still uses a small custom storage adapter so persisted token
+values remain under the legacy `accessToken` and `refreshToken` keys consumed
+by the HTTP client; serialization and store synchronization are handled by
+`pinia-plugin-persistedstate`. The theme store uses the plugin's default
+storage without a custom adapter.
 
 ## Development
 

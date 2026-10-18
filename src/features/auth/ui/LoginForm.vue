@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { Form, Field, ErrorMessage, type GenericObject } from "vee-validate";
+import { Form, Field, type GenericObject } from "vee-validate";
 import * as yup from "yup";
 import { useSessionStore } from "../../../entities/session";
-import { UiButton } from "../../../shared/ui";
+import { AppButton, AppInput, useAppToast } from "../../../shared/ui";
 
 const emit = defineEmits<{ authenticated: [] }>();
 const auth = useSessionStore();
+const toast = useAppToast();
 
 const apiError = ref("");
 const isLoading = ref(false);
@@ -30,6 +31,7 @@ const handleLogin = async (values: GenericObject) => {
   } catch (error) {
     apiError.value =
       error instanceof Error ? error.message : "Invalid username or password";
+    toast.error("Помилка авторизації", apiError.value);
   } finally {
     isLoading.value = false;
   }
@@ -55,34 +57,38 @@ const handleLogin = async (values: GenericObject) => {
     >
       <div class="login-view__field-group">
         <label for="username" class="login-view__label">Username</label>
-        <Field
-          name="username"
-          type="text"
-          class="login-view__input"
-          placeholder="Enter username"
-        />
-        <ErrorMessage name="username" class="login-view__field-error" />
+        <Field name="username" v-slot="{ field, errorMessage }">
+          <AppInput
+            v-bind="field"
+            type="text"
+            class="login-view__input"
+            placeholder="Enter username"
+            :error-message="errorMessage"
+          />
+        </Field>
       </div>
 
       <div class="login-view__field-group">
         <label for="password" class="login-view__label">Password</label>
-        <Field
-          name="password"
-          type="password"
-          class="login-view__input"
-          placeholder="Enter password"
-        />
-        <ErrorMessage name="password" class="login-view__field-error" />
+        <Field name="password" v-slot="{ field, errorMessage }">
+          <AppInput
+            v-bind="field"
+            type="password"
+            class="login-view__input"
+            placeholder="Enter password"
+            :error-message="errorMessage"
+          />
+        </Field>
       </div>
 
       <div v-if="apiError" class="login-view__api-error">
         {{ apiError }}
       </div>
 
-      <UiButton type="submit" :disabled="isLoading" class="login-view__submit">
+      <AppButton type="submit" :disabled="isLoading" class="login-view__submit">
         <span v-if="isLoading">Loading...</span>
         <span v-else>Login</span>
-      </UiButton>
+      </AppButton>
     </Form>
 
     <div class="login-view__footer">

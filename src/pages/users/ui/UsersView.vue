@@ -1,22 +1,15 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useUsersStore } from "../../../entities/user";
 import type { Participant } from "../../../shared/model";
-import { UiButton, UiInput } from "../../../shared/ui";
+import { AppButton } from "../../../shared/ui";
+import UsersTable from "../../../widgets/users-table";
 
-const route = useRoute();
-const router = useRouter();
 const usersStore = useUsersStore();
-const { users, total, isLoading, error } = storeToRefs(usersStore);
+const { users } = storeToRefs(usersStore);
 
-const limit = 10;
-const searchInput = ref((route.query.q as string) || "");
-const currentPage = computed(() => Number(route.query.page) || 1);
-const totalPages = computed(() => Math.ceil(total.value / limit));
 const lotteryWinners = ref<Participant[]>([]);
-const userToDelete = ref<{ id: number; fullName: string } | null>(null);
 
 const readStoredLotteryWinners = (): Participant[] => {
   if (typeof window === "undefined") return [];
@@ -29,7 +22,13 @@ const readStoredLotteryWinners = (): Participant[] => {
   }
 };
 
-const mapUserToParticipant = (user: { id: number; firstName: string; lastName: string; email: string; phone: string }): Participant => ({
+const mapUserToParticipant = (user: {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+}): Participant => ({
   id: String(user.id),
   name: `${user.firstName} ${user.lastName}`.trim(),
   dateOfBirth: "",
@@ -42,7 +41,9 @@ const apiParticipants = computed(() =>
 );
 
 const syncLotteryWinnersWithUsers = () => {
-  const participantMap = new Map(apiParticipants.value.map((participant) => [participant.id, participant]));
+  const participantMap = new Map(
+    apiParticipants.value.map((participant) => [participant.id, participant]),
+  );
 
   lotteryWinners.value = lotteryWinners.value
     .filter((winner) => participantMap.has(winner.id))
@@ -74,52 +75,10 @@ const pickLotteryWinner = () => {
 };
 
 const removeLotteryWinner = (id: string) => {
-  lotteryWinners.value = lotteryWinners.value.filter((winner) => winner.id !== id);
+  lotteryWinners.value = lotteryWinners.value.filter(
+    (winner) => winner.id !== id,
+  );
 };
-
-const updateRoute = (page: number, q: string) => {
-  router.push({ query: { ...route.query, page, q: q || undefined } });
-};
-
-const handleSearch = () => {
-  updateRoute(1, searchInput.value);
-};
-
-const openDeleteModal = (id: number, fullName: string) => {
-  userToDelete.value = { id, fullName };
-};
-
-const closeDeleteModal = () => {
-  userToDelete.value = null;
-};
-
-const deleteUser = async () => {
-  if (!userToDelete.value) return;
-
-  try {
-    await usersStore.removeUser(userToDelete.value.id);
-    closeDeleteModal();
-
-    const currentPageUsers = users.value.length;
-    if (currentPageUsers === 0 && currentPage.value > 1) {
-      updateRoute(currentPage.value - 1, searchInput.value);
-    }
-  } catch (error) {
-    alert(error instanceof Error ? error.message : "Помилка видалення");
-  }
-};
-
-watch(
-  () => route.query,
-  (newQuery) => {
-    const page = Number(newQuery.page) || 1;
-    const q = (newQuery.q as string) || "";
-    const skip = (page - 1) * limit;
-    usersStore.fetchUsers(limit, skip, q);
-    searchInput.value = q;
-  },
-  { immediate: true },
-);
 
 watch(
   lotteryWinners,
@@ -133,9 +92,7 @@ watch(
 
 watch(
   apiParticipants,
-  () => {
-    syncLotteryWinnersWithUsers();
-  },
+  syncLotteryWinnersWithUsers,
   { deep: true, immediate: true },
 );
 </script>
@@ -149,135 +106,43 @@ watch(
           <h2 class="lottery-panel__title">Participants & winners</h2>
         </div>
 
-        <UiButton
+        <AppButton
           type="button"
           class="lottery-button lottery-button--primary"
           :disabled="!canPickWinner"
           @click="pickLotteryWinner"
         >
           New winner
-        </UiButton>
+        </AppButton>
       </div>
 
       <div class="winner-list">
-        <span v-if="lotteryWinners.length === 0" class="winner-list__placeholder">
+        <span
+          v-if="lotteryWinners.length === 0"
+          class="winner-list__placeholder"
+        >
           No winners yet
         </span>
 
-        <div v-for="winner in lotteryWinners" :key="winner.id" class="winner-chip">
+        <div
+          v-for="winner in lotteryWinners"
+          :key="winner.id"
+          class="winner-chip"
+        >
           <span>{{ winner.name }}</span>
-          <UiButton
+          <AppButton
             type="button"
             class="winner-chip__remove"
             aria-label="Remove winner"
             @click="removeLotteryWinner(winner.id)"
           >
             ×
-          </UiButton>
+          </AppButton>
         </div>
       </div>
     </section>
 
-    <div class="users-view__header">
-      <h1 class="users-view__title">Користувачі</h1>
-      <div class="users-view__toolbar">
-        <UiInput
-          v-model="searchInput"
-          @keydown.enter="handleSearch"
-          placeholder="Пошук..."
-          class="users-view__search"
-        />
-        <UiButton @click="handleSearch" class="users-view__search-button">
-          Знайти
-        </UiButton>
-        <RouterLink to="/users/new" class="users-view__create-link">
-          Створити
-        </RouterLink>
-      </div>
-    </div>
-
-    <div v-if="isLoading" class="users-view__loading">
-      Завантаження...
-    </div>
-    <div v-else-if="error" class="users-view__error">
-      {{ error }}
-    </div>
-
-    <div v-else>
-      <table class="users-view__table">
-        <thead>
-          <tr class="users-view__table-heading">
-            <th>ID</th>
-            <th>Ім'я</th>
-            <th>Email</th>
-            <th class="users-view__actions-heading">Дії</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="user in users"
-            :key="user.id"
-            class="users-view__table-row"
-          >
-            <td>{{ user.id }}</td>
-            <td>{{ user.firstName }} {{ user.lastName }}</td>
-            <td>{{ user.email }}</td>
-            <td class="users-view__actions">
-              <RouterLink :to="`/users/${user.id}`" class="users-view__details-link">
-                Деталі
-              </RouterLink>
-              <RouterLink :to="`/users/${user.id}/edit`" class="users-view__edit-link">
-                Редагувати
-              </RouterLink>
-              <UiButton
-                @click="openDeleteModal(user.id, `${user.firstName} ${user.lastName}`)"
-                class="users-view__delete-button"
-              >
-                Видалити
-              </UiButton>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div v-if="userToDelete" class="users-view__modal-backdrop" @click="closeDeleteModal">
-        <div class="users-view__modal" role="dialog" aria-modal="true" @click.stop>
-          <h3 class="users-view__modal-title">Підтвердження видалення</h3>
-          <p class="users-view__modal-text">
-            Ви дійсно бажаєте видалити користувача
-            <strong>{{ userToDelete.fullName }}</strong>?
-          </p>
-          <div class="users-view__modal-actions">
-            <UiButton type="button" class="users-view__modal-cancel" @click="closeDeleteModal">
-              Скасувати
-            </UiButton>
-            <UiButton type="button" class="users-view__modal-confirm" @click="deleteUser">
-              Видалити
-            </UiButton>
-          </div>
-        </div>
-      </div>
-
-      <div class="users-view__pagination">
-        <UiButton
-          :disabled="currentPage === 1"
-          @click="updateRoute(currentPage - 1, searchInput)"
-          class="users-view__page-button"
-        >
-          Попередня
-        </UiButton>
-        <span class="users-view__page-number">
-          Сторінка {{ currentPage }} з {{ totalPages || 1 }}
-        </span>
-        <UiButton
-          :disabled="currentPage >= totalPages"
-          @click="updateRoute(currentPage + 1, searchInput)"
-          class="users-view__page-button"
-        >
-          Наступна
-        </UiButton>
-      </div>
-    </div>
+    <UsersTable />
   </div>
 </template>
 
@@ -288,186 +153,6 @@ watch(
   border-radius: 0.5rem;
   background: #fff;
   box-shadow: 0 1px 2px rgb(15 23 42 / 5%);
-}
-
-.users-view__header,
-.users-view__toolbar,
-.users-view__pagination {
-  display: flex;
-  align-items: center;
-}
-
-.users-view__header {
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 1.5rem 0 1rem;
-}
-
-.users-view__title {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 2rem;
-}
-
-.users-view__toolbar {
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.users-view__search {
-  padding: 0.25rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.25rem;
-}
-
-.users-view__search:focus {
-  border-color: #3b82f6;
-  outline: none;
-}
-
-.users-view__search-button,
-.users-view__create-link {
-  padding: 0.25rem 1rem;
-  border: 0;
-  border-radius: 0.25rem;
-  color: #fff;
-  transition: background-color 150ms;
-  cursor: pointer;
-}
-
-.users-view__search-button {
-  background: #3b82f6;
-}
-
-.users-view__search-button:hover {
-  background: #2563eb;
-}
-
-.users-view__create-link {
-  background: #16a34a;
-}
-
-.users-view__create-link:hover {
-  background: #15803d;
-}
-
-.users-view__loading {
-  padding: 2.5rem 0;
-  color: #6b7280;
-  text-align: center;
-}
-
-.users-view__error {
-  color: #ef4444;
-}
-
-.users-view__table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.users-view__table-heading,
-.users-view__table-row {
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.users-view__table-heading {
-  color: #4b5563;
-  font-size: 0.875rem;
-}
-
-.users-view__actions-heading {
-  width: 240px;
-  text-align: right;
-  padding-right: 1rem;
-}
-
-.users-view__table th,
-.users-view__table td {
-  padding: 0.5rem;
-}
-
-.users-view__table-row:hover {
-  background: #f9fafb;
-}
-
-.users-view__table-row td {
-  padding-top: 0.75rem;
-}
-
-.users-view__pagination {
-  justify-content: center;
-  gap: 1rem;
-  padding-top: 1rem;
-}
-
-.users-view__page-button {
-  padding: 0.5rem 0.9rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  background: #fff;
-  cursor: pointer;
-}
-
-.users-view__page-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.users-view__actions {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.7rem;
-  text-align: left;
-  padding-left: 0.5rem;
-}
-
-.users-view__details-link,
-.users-view__edit-link,
-.users-view__delete-button {
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: opacity 0.2s ease, text-decoration-color 0.2s ease;
-}
-
-.users-view__details-link {
-  color: #2563eb;
-}
-
-.users-view__details-link:hover {
-  text-decoration: underline;
-  text-decoration-color: #2563eb;
-  opacity: 0.8;
-}
-
-.users-view__edit-link {
-  color: #16a34a;
-}
-
-.users-view__edit-link:hover {
-  text-decoration: underline;
-  text-decoration-color: #16a34a;
-  opacity: 0.8;
-}
-
-.users-view__delete-button {
-  border: none;
-  background: transparent;
-  color: #dc2626;
-  cursor: pointer;
-}
-
-.users-view__delete-button:hover {
-  text-decoration: underline;
-  text-decoration-color: #dc2626;
-  opacity: 0.8;
 }
 
 .lottery-panel {
@@ -502,13 +187,16 @@ watch(
 }
 
 .lottery-button {
+  padding: 0.7rem 1rem;
   border: none;
   border-radius: 0.75rem;
-  padding: 0.7rem 1rem;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .lottery-button:hover:not(:disabled) {
@@ -542,11 +230,11 @@ watch(
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: #dbeafe;
-  border: 1px solid #93c5fd;
-  color: #1d4ed8;
-  border-radius: 999px;
   padding: 0.5rem 0.75rem;
+  border: 1px solid #93c5fd;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
   font-weight: 600;
 }
 
@@ -559,70 +247,14 @@ watch(
   line-height: 1;
 }
 
-.users-view__modal-backdrop {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(15, 23, 42, 0.45);
-  z-index: 1000;
-}
-
-.users-view__modal {
-  width: min(420px, calc(100vw - 2rem));
-  padding: 1.5rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 1rem;
-  background: #fff;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
-}
-
-.users-view__modal-title {
-  margin: 0 0 0.75rem;
-  font-size: 1.25rem;
-}
-
-.users-view__modal-text {
-  margin: 0 0 1.5rem;
-  line-height: 1.6;
-  color: #374151;
-}
-
-.users-view__modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-}
-
-.users-view__modal-cancel,
-.users-view__modal-confirm {
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.625rem 1rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.users-view__modal-cancel {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-.users-view__modal-confirm {
-  background: #dc2626;
-  color: #fff;
-}
-
 @media (max-width: 640px) {
-  .users-view__header,
+  .users-view {
+    overflow-x: auto;
+  }
+
   .lottery-panel__header {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .users-view {
-    overflow-x: auto;
   }
 }
 </style>

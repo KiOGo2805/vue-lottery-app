@@ -34,8 +34,9 @@ export const useUsersStore = defineStore("users", () => {
       const serverUsers = res.items
         .filter((user) => !deletedUsers.value.has(user.id))
         .map((user) => updatedUsers.value.get(user.id) ?? user);
+      const serverUserIds = new Set(serverUsers.map((user) => user.id));
       const matchingCreatedUsers = createdUsers.value.filter((user) =>
-        matchesQuery(user, q),
+        !serverUserIds.has(user.id) && matchesQuery(user, q),
       );
       const isLastServerPage = skip + res.items.length >= res.total;
       const visibleUsers = isLastServerPage

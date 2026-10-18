@@ -3,16 +3,16 @@ import { ref, onMounted } from "vue";
 import {
   Form,
   Field,
-  ErrorMessage,
   type GenericObject,
 } from "vee-validate";
 import { useUsersStore, userSchema } from "../../../entities/user";
 import type { User } from "../../../entities/user";
-import { UiButton } from "../../../shared/ui";
+import { AppButton, AppInput, useAppToast } from "../../../shared/ui";
 
 const props = defineProps<{ id: string }>();
 const emit = defineEmits<{ updated: [] }>();
 const usersStore = useUsersStore();
+const toast = useAppToast();
 
 const initialData = ref<Partial<User>>({});
 const isLoading = ref(true);
@@ -28,6 +28,7 @@ onMounted(async () => {
       error instanceof Error
         ? error.message
         : "Не вдалося завантажити користувача";
+    toast.error("Не вдалося завантажити користувача", apiError.value);
   } finally {
     isLoading.value = false;
   }
@@ -42,12 +43,14 @@ const onSubmit = async (values: GenericObject) => {
       Number(props.id),
       validatedValues,
     );
+    toast.success("Користувача оновлено");
     emit("updated");
   } catch (error) {
     apiError.value =
       error instanceof Error
         ? error.message
         : "Не вдалося зберегти користувача";
+    toast.error("Не вдалося зберегти користувача", apiError.value);
   } finally {
     isSaving.value = false;
   }
@@ -77,68 +80,96 @@ const onSubmit = async (values: GenericObject) => {
       <div class="user-edit__row">
         <div class="user-edit__field">
           <label class="user-edit__label">Ім'я</label>
-          <Field name="firstName" class="user-edit__input" />
-          <ErrorMessage name="firstName" class="user-edit__field-error" />
+          <Field name="firstName" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              class="user-edit__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
         <div class="user-edit__field">
           <label class="user-edit__label">Прізвище</label>
-          <Field name="lastName" class="user-edit__input" />
-          <ErrorMessage name="lastName" class="user-edit__field-error" />
+          <Field name="lastName" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              class="user-edit__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
       </div>
 
       <div class="user-edit__row">
         <div class="user-edit__field">
           <label class="user-edit__label">Email</label>
-          <Field
-            name="email"
-            type="email"
-            class="user-edit__input"
-          />
-          <ErrorMessage name="email" class="user-edit__field-error" />
+          <Field name="email" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              type="email"
+              class="user-edit__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
         <div class="user-edit__field">
           <label class="user-edit__label">Телефон</label>
-          <Field name="phone" class="user-edit__input" />
-          <ErrorMessage name="phone" class="user-edit__field-error" />
+          <Field name="phone" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              class="user-edit__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
       </div>
 
       <div class="user-edit__row user-edit__row--three">
         <div class="user-edit__field">
           <label class="user-edit__label">Username</label>
-          <Field name="username" class="user-edit__input" />
-          <ErrorMessage name="username" class="user-edit__field-error" />
+          <Field name="username" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              class="user-edit__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
         <div class="user-edit__field">
           <label class="user-edit__label">Пароль</label>
-          <Field
-            name="password"
-            type="password"
-            class="user-edit__input"
-          />
-          <ErrorMessage name="password" class="user-edit__field-error" />
+          <Field name="password" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              type="password"
+              class="user-edit__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
         <div class="user-edit__field">
           <label class="user-edit__label">Вік</label>
-          <Field
-            name="age"
-            type="number"
-            class="user-edit__input"
-          />
-          <ErrorMessage name="age" class="user-edit__field-error" />
+          <Field name="age" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              type="number"
+              class="user-edit__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
         <div class="user-edit__field">
           <label class="user-edit__label">Стать</label>
-          <Field
-            name="gender"
-            as="select"
-            class="user-edit__input"
-          >
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+          <Field name="gender" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              as="select"
+              class="user-edit__input"
+              :error-message="errorMessage"
+            >
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </AppInput>
           </Field>
-          <ErrorMessage name="gender" class="user-edit__field-error" />
         </div>
       </div>
 
@@ -156,13 +187,13 @@ const onSubmit = async (values: GenericObject) => {
           class="user-edit__cancel"
           >Скасувати</RouterLink
         >
-        <UiButton
+        <AppButton
           type="submit"
           :disabled="isSaving"
           class="user-edit__submit"
         >
           {{ isSaving ? "Збереження..." : "Зберегти" }}
-        </UiButton>
+        </AppButton>
       </div>
     </Form>
   </div>

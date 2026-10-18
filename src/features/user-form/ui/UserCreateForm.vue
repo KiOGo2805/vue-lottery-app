@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { ErrorMessage, Field, Form, type GenericObject } from "vee-validate";
+import { Field, Form, type GenericObject } from "vee-validate";
 import { useUsersStore, userSchema } from "../../../entities/user";
-import { UiButton } from "../../../shared/ui";
+import { AppButton, AppInput, useAppToast } from "../../../shared/ui";
 
 const emit = defineEmits<{ created: [] }>();
 const usersStore = useUsersStore();
+const toast = useAppToast();
 const apiError = ref("");
 const isSaving = ref(false);
 
@@ -15,10 +16,12 @@ const onSubmit = async (values: GenericObject) => {
   try {
     const validatedValues = await userSchema.validate(values);
     await usersStore.createUser(validatedValues);
+    toast.success("Користувача створено");
     emit("created");
   } catch (error) {
     apiError.value =
       error instanceof Error ? error.message : "Не вдалося створити користувача";
+    toast.error("Не вдалося створити користувача", apiError.value);
   } finally {
     isSaving.value = false;
   }
@@ -39,23 +42,27 @@ const onSubmit = async (values: GenericObject) => {
           <label for="firstName" class="user-create__label"
             >Ім'я</label
           >
-          <Field
-            id="firstName"
-            name="firstName"
-            class="user-create__input"
-          />
-          <ErrorMessage name="firstName" class="user-create__field-error" />
+          <Field name="firstName" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              id="firstName"
+              class="user-create__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
         <div class="user-create__field">
           <label for="lastName" class="user-create__label"
             >Прізвище</label
           >
-          <Field
-            id="lastName"
-            name="lastName"
-            class="user-create__input"
-          />
-          <ErrorMessage name="lastName" class="user-create__field-error" />
+          <Field name="lastName" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              id="lastName"
+              class="user-create__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
       </div>
 
@@ -64,25 +71,29 @@ const onSubmit = async (values: GenericObject) => {
           <label for="email" class="user-create__label"
             >Email</label
           >
-          <Field
-            id="email"
-            name="email"
-            type="email"
-            class="user-create__input"
-          />
-          <ErrorMessage name="email" class="user-create__field-error" />
+          <Field name="email" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              id="email"
+              type="email"
+              class="user-create__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
         <div class="user-create__field">
           <label for="phone" class="user-create__label"
             >Телефон</label
           >
-          <Field
-            id="phone"
-            name="phone"
-            type="tel"
-            class="user-create__input"
-          />
-          <ErrorMessage name="phone" class="user-create__field-error" />
+          <Field name="phone" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              id="phone"
+              type="tel"
+              class="user-create__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
       </div>
 
@@ -91,34 +102,40 @@ const onSubmit = async (values: GenericObject) => {
           <label for="username" class="user-create__label"
             >Username</label
           >
-          <Field
-            id="username"
-            name="username"
-            class="user-create__input"
-          />
-          <ErrorMessage name="username" class="user-create__field-error" />
+          <Field name="username" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              id="username"
+              class="user-create__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
         <div class="user-create__field">
           <label for="password" class="user-create__label"
             >Пароль</label
           >
-          <Field
-            id="password"
-            name="password"
-            type="password"
-            class="user-create__input"
-          />
-          <ErrorMessage name="password" class="user-create__field-error" />
+          <Field name="password" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              id="password"
+              type="password"
+              class="user-create__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
         <div class="user-create__field">
           <label for="age" class="user-create__label">Вік</label>
-          <Field
-            id="age"
-            name="age"
-            type="number"
-            class="user-create__input"
-          />
-          <ErrorMessage name="age" class="user-create__field-error" />
+          <Field name="age" v-slot="{ field, errorMessage }">
+            <AppInput
+              v-bind="field"
+              id="age"
+              type="number"
+              class="user-create__input"
+              :error-message="errorMessage"
+            />
+          </Field>
         </div>
       </div>
 
@@ -126,17 +143,19 @@ const onSubmit = async (values: GenericObject) => {
         <label for="gender" class="user-create__label"
           >Стать</label
         >
-        <Field
-          id="gender"
-          name="gender"
-          as="select"
-          class="user-create__input"
-        >
-          <option value="" disabled>Оберіть стать</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
+        <Field name="gender" v-slot="{ field, errorMessage }">
+          <AppInput
+            v-bind="field"
+            id="gender"
+            as="select"
+            class="user-create__input"
+            :error-message="errorMessage"
+          >
+            <option value="" disabled>Оберіть стать</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </AppInput>
         </Field>
-        <ErrorMessage name="gender" class="user-create__field-error" />
       </div>
 
       <div
@@ -153,13 +172,13 @@ const onSubmit = async (values: GenericObject) => {
           class="user-create__cancel"
           >Скасувати</RouterLink
         >
-        <UiButton
+        <AppButton
           type="submit"
           :disabled="isSaving"
           class="user-create__submit"
         >
           {{ isSaving ? "Створення..." : "Створити" }}
-        </UiButton>
+        </AppButton>
       </div>
     </Form>
   </div>

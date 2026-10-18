@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import ThemeToggleButton from "../../features/theme-toggle";
+</script>
+
 <template>
   <div class="auth-shell min-h-screen flex items-center justify-center p-4">
     <div class="auth-theme-toggle">
@@ -8,7 +12,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import ThemeToggleButton from "../../features/theme-toggle";
-</script>
