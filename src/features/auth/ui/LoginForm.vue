@@ -43,13 +43,11 @@ const handleLogin = async (values: GenericObject) => {
     <div class="login-view__intro">
       <h1 class="login-view__title">Welcome Back</h1>
       <p class="login-view__subtitle">Sign in to access the users list</p>
-      <!-- Тестові дані для зручності -->
       <p class="login-view__hint">
         Hint: use <b>emilys</b> / <b>emilyspass</b>
       </p>
     </div>
 
-    <!-- Компонент Form з vee-validate -->
     <Form
       @submit="handleLogin"
       :validation-schema="schema"
