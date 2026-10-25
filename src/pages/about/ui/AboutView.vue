@@ -1,9 +1,7 @@
 <template>
   <div class="about-view">
     <h1 class="about-view__title">Мельник Степан Романович</h1>
-    <p class="about-view__subtitle">
-      Студент 3 курсу, ЧНУ ім. Юрія Федьковича (Чернівці)
-    </p>
+    <p class="about-view__subtitle">Студент 3 курсу, ЧНУ ім. Юрія Федьковича</p>
 
     <h2 class="about-view__section-title">Technical Skills</h2>
     <div class="about-view__skills">
