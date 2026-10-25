@@ -1,18 +1,19 @@
 <template>
   <div class="about-view">
-    <h1 class="about-view__title">Степан Романович Мельник</h1>
+    <h1 class="about-view__title">Мельник Степан Романович</h1>
     <p class="about-view__subtitle">
-      Студент 2 курсу, ЧНУ ім. Юрія Федьковича (Чернівці)
+      Студент 3 курсу, ЧНУ ім. Юрія Федьковича (Чернівці)
     </p>
 
     <h2 class="about-view__section-title">Technical Skills</h2>
     <div class="about-view__skills">
-      <span class="about-view__skill">C#</span>
       <span class="about-view__skill">Python</span>
-      <span class="about-view__skill">C++</span>
+      <span class="about-view__skill">C#</span>
       <span class="about-view__skill">TypeScript / JavaScript</span>
-      <span class="about-view__skill">Vue.js / Spring Boot</span>
-      <span class="about-view__skill">MySQL / MongoDB</span>
+      <span class="about-view__skill">Vue.js</span>
+      <span class="about-view__skill">MySQL / PostgreSQL</span>
+      <span class="about-view__skill">C++</span>
+      <span class="about-view__skill">Spring Boot</span>
     </div>
 
     <a
